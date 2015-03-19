@@ -12,8 +12,6 @@ public class Parameters {
 	private Dictionary<string, string> stringParam;
 	private Dictionary<string, double> doubleParam;
 	private Dictionary<string, float> floatParam;
-	private Dictionary<string, short> shortParam;
-	private Dictionary<string, long> longParam;
 
 	private Dictionary<string, ArrayList> arrayListParam;
 	private Dictionary<string, object> objectParam;
@@ -27,8 +25,6 @@ public class Parameters {
 		stringParam = new Dictionary<string, string>();
 		doubleParam = new Dictionary<string, double>();
 		floatParam = new Dictionary<string, float>();
-		shortParam = new Dictionary<string, short>();
-		longParam = new Dictionary<string, long>();
 
 		arrayListParam = new Dictionary<string,ArrayList>();
 		objectParam = new Dictionary<string,object>();
@@ -56,14 +52,6 @@ public class Parameters {
 
 	public void PutExtra(string name, float value) {
 		floatParam.Add(name, value);
-	}
-
-	public void PutExtra(string name, short value) {
-		shortParam.Add(name, value);
-	}
-
-	public void PutExtra(string name, long value) {
-		longParam.Add(name, value);
 	}
 
 	public void PutExtra(string name, ArrayList value) {
@@ -96,14 +84,6 @@ public class Parameters {
 
 	public float GetExtra(string name, float defaultValue) {
 		return (floatParam.ContainsKey(name)) ? floatParam[name] : defaultValue;
-	}
-
-	public short GetExtra(string name, short defaultValue) {
-		return (shortParam.ContainsKey(name)) ? shortParam[name] : defaultValue;
-	}
-
-	public long GetExtra(string name, long defaultValue) {
-		return (longParam.ContainsKey(name)) ? longParam[name] : defaultValue;
 	}
 
 	public ArrayList GetExtra(string name, ArrayList defaultValue) {
