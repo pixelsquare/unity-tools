@@ -1,1 +1,1 @@
-VN Tool v0.01
+VN Tool v0.02

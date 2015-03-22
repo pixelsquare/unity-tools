@@ -1,29 +1,113 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.IO;
+using UnityEditor.AnimatedValues;
+using System.Collections.Generic;
+using System.Collections;
 
-public class VNToolkitEditor : EditorWindow {
+namespace VNToolkit {
+	public class VNToolkitEditor : EditorWindow {
 
-	// Public Variables
+		// Public Variables
 
-	// Private Variables
-	private string versionTitle;
+		// Private Variables
+		private string versionTitle;
 
-	// Static Variables
-	private const float WINDOW_MIN_Y = 400f;
-	private const float WINDOW_MIN_X = 500f;
+		private int selectedIndx;
+		private string[] windowToolbar;
 
-	[MenuItem("Toolkit/VN Toolkit")]
-	private static void Initialize() {
-		string versionTitle = File.ReadAllText(Application.dataPath + "/VN Toolkit/Version Number.txt");
+		private enum WindowOptions {
+			WINDOW_LOAD = 0,
+			WINDOW_SAVE = 1
+		}
 
-		VNToolkitEditor window = (VNToolkitEditor)EditorWindow.GetWindow(typeof(VNToolkitEditor));
-		window.title = versionTitle;
-		window.minSize = new Vector2(WINDOW_MIN_X, WINDOW_MIN_Y);
-		window.Show();
-	}
+		private WindowOptions windowOptions;
 
-	private void OnGUI() {
-		GUILayout.Label("VN Toolkit", EditorStyles.boldLabel);
+		private VNToolkitPhysicalData physicalData;
+
+		// Static Variables
+
+		[MenuItem("Toolkit/VN Toolkit")]
+		private static void Initialize() {
+			VNToolkitEditor window = (VNToolkitEditor)EditorWindow.GetWindow(typeof(VNToolkitEditor));
+			window.title = VNToolkitConstants.WINDOW_TITLE;
+			window.position = new Rect(Screen.width * 0.5f, Screen.height * 0.5f, VNToolkitConstants.WINDOW_WIDTH, VNToolkitConstants.WINDOW_HEIGHT);
+			window.minSize = new Vector2(VNToolkitConstants.WINDOW_WIDTH, VNToolkitConstants.WINDOW_HEIGHT);
+			window.Show();
+		}
+
+		private void OnEnable() {
+			hideFlags = HideFlags.HideAndDontSave;
+			versionTitle = File.ReadAllText(Application.dataPath + "/VN Toolkit/Version Number.txt");
+
+			selectedIndx = -1;
+			windowToolbar = new string[] { "Load", "Save" };
+			
+			physicalData = new VNToolkitPhysicalData();
+		}
+
+		private void OnGUI() {
+			WindowHeader();
+
+			EditorGUILayout.BeginVertical("box");
+			EditorGUILayout.BeginHorizontal();
+
+			VNToolkitChapterEditor.ChapterWindow(Repaint);
+			VNToolkitSceneEditor.SceneWindow(Repaint);
+			VNToolkitPhysicalDataEditor.PhysicalDataWindow(Repaint);
+
+			EditorGUILayout.EndHorizontal();
+			EditorGUILayout.EndVertical();
+
+			WindowFooter();
+
+			//EditorGUILayout.BeginVertical("Box");
+			//EditorGUILayout.BeginHorizontal("Box");
+			//if (GUILayout.Button("Test", EditorStyles.boldLabel)) {
+			//    VNToolkitEditorBase.CreateLoadBase();
+			//}
+			//EditorGUILayout.EndHorizontal();
+			//EditorGUILayout.EndVertical();
+		}
+
+		private void WindowHeader() {
+			GUILayout.Space(5f);
+			selectedIndx = GUILayout.Toolbar(selectedIndx, windowToolbar, EditorStyles.toolbarButton);
+
+			windowOptions = (WindowOptions)selectedIndx;
+			if (windowOptions == WindowOptions.WINDOW_LOAD) {
+				Load();
+			}
+			else if (windowOptions == WindowOptions.WINDOW_SAVE) {
+				Save();
+			}
+
+			selectedIndx = -1;
+		}
+
+		private void Save() {
+			Debug.Log("VN Editor: Saved");
+			VNToolkitNotifierEditor.TriggerNotification("Data Saved!", VNToolkitConstants.NOTIFICATION_TIMEOUT);
+
+			physicalData.baseId = 0;
+			physicalData.Save();
+		}
+
+		private void Load() {
+			Debug.Log("VN Editor: Load");
+			VNToolkitNotifierEditor.TriggerNotification("Data Loading", VNToolkitConstants.NOTIFICATION_TIMEOUT);
+		}
+
+		private void WindowFooter() {
+			GUI.Box(new Rect(0f, position.height - 20f, position.width, 20f), string.Empty, EditorStyles.textField);
+
+			GUI.Box(new Rect(0f, position.height - 20f, 100f, 20f), string.Empty, EditorStyles.textField);
+			EditorGUI.DropShadowLabel(new Rect(0f, position.height - 15f, 100f, 10f), versionTitle);
+
+			VNToolkitNotifierEditor.NotifierWindow(Repaint, position);
+
+			GUI.Box(new Rect(position.width - 150f, position.height - 20f, 150f, 20f), string.Empty, EditorStyles.textField);
+			EditorGUI.ProgressBar(new Rect(position.width - 150f, position.height - 20f, 150f, 20f), 1, "Loading");
+		}
 	}
 }

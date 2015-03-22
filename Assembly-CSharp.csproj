@@ -50,6 +50,8 @@
      <Compile Include="Assets\Utilities\ObjectListener.cs" />
      <Compile Include="Assets\Utilities\ObjectQueue.cs" />
      <Compile Include="Assets\Utilities\Parameters.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor Data\VNToolkitPhysicalData.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\VNToolkitConstants.cs" />
      <None Include="Assets\VN Toolkit\Version Number.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
