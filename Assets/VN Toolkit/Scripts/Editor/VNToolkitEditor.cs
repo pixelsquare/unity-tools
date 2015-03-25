@@ -22,8 +22,7 @@ namespace VNToolkit {
 		}
 
 		private WindowOptions windowOptions;
-
-		private VNToolkitPhysicalData physicalData;
+		private VNToolkitDataManager vnToolkitDataManager;
 
 		// Static Variables
 
@@ -42,8 +41,11 @@ namespace VNToolkit {
 
 			selectedIndx = -1;
 			windowToolbar = new string[] { "Load", "Save" };
-			
-			physicalData = new VNToolkitPhysicalData();
+
+			vnToolkitDataManager = new VNToolkitDataManager();
+			vnToolkitDataManager.Initialize();
+
+			VNToolkitChapterEditor.Initialize(Repaint);
 		}
 
 		private void OnGUI() {
@@ -54,7 +56,8 @@ namespace VNToolkit {
 
 			VNToolkitChapterEditor.ChapterWindow(Repaint);
 			VNToolkitSceneEditor.SceneWindow(Repaint);
-			VNToolkitPhysicalDataEditor.PhysicalDataWindow(Repaint);
+			//VNToolkitPhysicalDataEditor.PhysicalDataWindow(Repaint);
+			VNToolkitChapterEditor.ChapterInformationWindow();
 
 			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.EndVertical();
@@ -87,14 +90,21 @@ namespace VNToolkit {
 
 		private void Save() {
 			Debug.Log("VN Editor: Saved");
-			VNToolkitNotifierEditor.TriggerNotification("Data Saved!", VNToolkitConstants.NOTIFICATION_TIMEOUT);
+			vnToolkitDataManager.chapterData.AddRange(VNToolkitChapterEditor.chapterInfo);
 
-			physicalData.baseId = 0;
-			physicalData.Save();
+			vnToolkitDataManager.Save();
+			AssetDatabase.Refresh();
+
+			VNToolkitNotifierEditor.TriggerNotification("Data Saved!", VNToolkitConstants.NOTIFICATION_TIMEOUT);
 		}
 
 		private void Load() {
 			Debug.Log("VN Editor: Load");
+
+			vnToolkitDataManager.Load();
+			ArrayUtility.AddRange<VNToolkitChapterData>(ref VNToolkitChapterEditor.chapterInfo, vnToolkitDataManager.chapterData.ToArray());
+			VNToolkitChapterEditor.SetDirty();
+
 			VNToolkitNotifierEditor.TriggerNotification("Data Loading", VNToolkitConstants.NOTIFICATION_TIMEOUT);
 		}
 

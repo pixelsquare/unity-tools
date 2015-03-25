@@ -19,12 +19,10 @@ namespace VNToolkit {
 		public const string FILE_EXT = ".json";
 		public const string FILE_FORMAT = "PhysicalData_{0}";
 
-		public int baseId;
-
-		public string id;
+		public int id;
 
 		public VNToolkitPhysicalData() {
-			id = string.Empty;
+			this.id = 0;
 		}
 
 		public VNToolkitPhysicalData Clone() {
@@ -51,8 +49,8 @@ namespace VNToolkit {
 			jsonSettings.TypeHintName = "__Type";
 			jsonSettings.PrettyPrint = true;
 
-			id = string.Format(FILE_FORMAT, baseId);
-			JsonWriter jsonWritter = new JsonWriter(BASE_PATH + id + FILE_EXT, jsonSettings);
+			string tmpId = string.Format(FILE_FORMAT, id);
+			JsonWriter jsonWritter = new JsonWriter(BASE_PATH + tmpId + FILE_EXT, jsonSettings);
 			jsonWritter.Write(this);
 			jsonWritter.TextWriter.Flush();
 			jsonWritter.TextWriter.Close();
