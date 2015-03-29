@@ -22,7 +22,7 @@ namespace VNToolkit {
 		}
 
 		private WindowOptions windowOptions;
-		private VNToolkitDataManager vnToolkitDataManager;
+		private VNToolkitEditorDataCache vnToolkitDataCache;
 
 		// Static Variables
 
@@ -32,6 +32,7 @@ namespace VNToolkit {
 			window.title = VNToolkitConstants.WINDOW_TITLE;
 			window.position = new Rect(Screen.width * 0.5f, Screen.height * 0.5f, VNToolkitConstants.WINDOW_WIDTH, VNToolkitConstants.WINDOW_HEIGHT);
 			window.minSize = new Vector2(VNToolkitConstants.WINDOW_WIDTH, VNToolkitConstants.WINDOW_HEIGHT);
+
 			window.Show();
 		}
 
@@ -42,22 +43,25 @@ namespace VNToolkit {
 			selectedIndx = -1;
 			windowToolbar = new string[] { "Load", "Save" };
 
-			vnToolkitDataManager = new VNToolkitDataManager();
-			vnToolkitDataManager.Initialize();
+			vnToolkitDataCache = new VNToolkitEditorDataCache();
+			vnToolkitDataCache.Initialize();
 
-			VNToolkitChapterEditor.Initialize(Repaint);
+			VNToolkitPanelManager.SharedInstance.Initialize(Repaint, position);
 		}
 
 		private void OnGUI() {
 			WindowHeader();
 
-			EditorGUILayout.BeginVertical("box");
+			EditorGUILayout.BeginVertical("box", GUILayout.MaxHeight(position.height - 50f));
 			EditorGUILayout.BeginHorizontal();
 
-			VNToolkitChapterEditor.ChapterWindow(Repaint);
-			VNToolkitSceneEditor.SceneWindow(Repaint);
+			VNToolkitPanelManager.SharedInstance.DrawPanels();
+
+			//VNToolkitChapterEditor.ChapterWindow(Repaint);
+			//VNToolkitSceneEditor.SceneWindow(Repaint);
 			//VNToolkitPhysicalDataEditor.PhysicalDataWindow(Repaint);
-			VNToolkitChapterEditor.ChapterInformationWindow();
+			//VNToolkitChapterEditor.ChapterInformationWindow();
+			//vnToolkitChapterEditor.DrawGUI();
 
 			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.EndVertical();
@@ -71,6 +75,13 @@ namespace VNToolkit {
 			//}
 			//EditorGUILayout.EndHorizontal();
 			//EditorGUILayout.EndVertical();
+
+			Event e = Event.current;
+			if (e.button == 0 && e.type == EventType.mouseDown) {
+				GUI.FocusControl(VNToolkitControlName.FOCUSED_NONE);
+			}
+
+			Repaint();
 		}
 
 		private void WindowHeader() {
@@ -84,16 +95,18 @@ namespace VNToolkit {
 			else if (windowOptions == WindowOptions.WINDOW_SAVE) {
 				Save();
 			}
-
+			
 			selectedIndx = -1;
 		}
 
 		private void Save() {
 			Debug.Log("VN Editor: Saved");
-			vnToolkitDataManager.chapterData.AddRange(VNToolkitChapterEditor.chapterInfo);
+			vnToolkitDataCache.chapterData.AddRange(VNToolkitChapterEditor.chapterInfo);
 
-			vnToolkitDataManager.Save();
+			vnToolkitDataCache.Save();
 			AssetDatabase.Refresh();
+
+			VNToolkitPanelManager.SharedInstance.SavePanels();
 
 			VNToolkitNotifierEditor.TriggerNotification("Data Saved!", VNToolkitConstants.NOTIFICATION_TIMEOUT);
 		}
@@ -101,9 +114,10 @@ namespace VNToolkit {
 		private void Load() {
 			Debug.Log("VN Editor: Load");
 
-			vnToolkitDataManager.Load();
-			ArrayUtility.AddRange<VNToolkitChapterData>(ref VNToolkitChapterEditor.chapterInfo, vnToolkitDataManager.chapterData.ToArray());
-			VNToolkitChapterEditor.SetDirty();
+			vnToolkitDataCache.Load();
+			ArrayUtility.Clear<VNToolkitChapterData>(ref VNToolkitChapterEditor.chapterInfo);
+			ArrayUtility.AddRange<VNToolkitChapterData>(ref VNToolkitChapterEditor.chapterInfo, vnToolkitDataCache.chapterData.ToArray());
+			VNToolkitPanelManager.SharedInstance.RepaintPanels(true);
 
 			VNToolkitNotifierEditor.TriggerNotification("Data Loading", VNToolkitConstants.NOTIFICATION_TIMEOUT);
 		}

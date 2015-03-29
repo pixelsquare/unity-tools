@@ -67,5 +67,20 @@ namespace VNToolkit {
 		public void Remove(VNToolkitPhysicalData physicalData) {
 			File.Delete(BASE_PATH + physicalData.id + FILE_EXT);
 		}
+
+		public override bool Equals(object obj) {
+			if (obj == null) return false;
+
+			VNToolkitChapterData data = obj as VNToolkitChapterData;
+			if (data == null) return false;
+
+			return (data.chapterId == this.chapterId) &&
+				   (data.chapterName == this.chapterName) &&
+				   (data.chapterDesc == this.chapterDesc);
+		}
+
+		public override int GetHashCode() {
+			return base.GetHashCode();
+		}
 	}
 }

@@ -32,8 +32,7 @@ namespace VNToolkit {
 
 			EditorGUILayout.BeginVertical(
 				"box", 
-				GUILayout.Width(VNToolkitConstants.SCENE_WINDOW_FIXED_WIDTH),
-				GUILayout.Height(VNToolkitConstants.SCENE_WINDOW_FIXED_HEIGHT)
+				GUILayout.Width(VNToolkitConstants.SCENE_WINDOW_FIXED_WIDTH)
 			);
 
 			if (GUILayout.Button("Scene", EditorStyles.boldLabel)) {
@@ -70,6 +69,7 @@ namespace VNToolkit {
 
 			EditorGUILayout.EndVertical();
 
+			GUILayout.FlexibleSpace();
 			EditorGUILayout.EndVertical();
 		}
 	}

@@ -5,23 +5,39 @@ using UnityEngine.Events;
 using UnityEditor;
 
 namespace VNToolkit {
-	public class VNToolkitChapterEditor {
+	public class VNToolkitChapterEditor : VNToolkitPanelAbstract {
 
 		// Public Variables
+		public string[] chapterList;
+		public Vector2 chapterScrollView;
+
+		public AnimBool chapterInfoAnim;
+		public bool[] showInfoWindow;
 
 		// Private Variables
-		private static int selectedChapterIndx;
-		private static string[] chapterList;
-		private static Vector2 chapterScrollView;
-
-		private static AnimBool chapterInfoAnim;
-		private static bool[] showInfoWindow;
-
-		public static VNToolkitChapterData[] chapterInfo;
+		private int chapterListCount;
 
 		// Static Variables
+		public static int selectedChapterIndx;
+		public static VNToolkitChapterData[] chapterInfo;
 
-		public static void Initialize(UnityAction repaint) {
+		public override string ControlName {
+			get { return VNToolkitControlName.FOCUSED_CHAPTER_PANEL; }
+		}
+
+		public override bool PanelActive {
+			get { return true; }
+		}
+
+		public override bool OnWindowChanged {
+			get { return chapterList.Length != chapterListCount; }
+		}
+
+		public override System.Action WindowGUI {
+			get { return ChapterWindow; }
+		}
+
+		public override void Initialize(UnityAction repaint, Rect windowPos) {
 			selectedChapterIndx = -1;
 			chapterList = new string[0];
 
@@ -30,12 +46,19 @@ namespace VNToolkit {
 
 			showInfoWindow = new bool[0];
 			chapterInfo = new VNToolkitChapterData[0];
+			chapterListCount = chapterList.Length;
+
+			RepaintPanel();
 		}
 
-		public static void SetDirty() {
+		public override void RepaintPanel(bool forcedSave = false) {
 			int infoCount = chapterInfo.Length;
 			showInfoWindow = new bool[infoCount];
 			chapterList = new string[infoCount];
+
+			if (forcedSave) {
+				chapterListCount = chapterList.Length;
+			}
 
 			for (int i = 0; i < infoCount; i++) {
 				showInfoWindow[i] = true;
@@ -43,11 +66,14 @@ namespace VNToolkit {
 			}
 		}
 
-		public static void ChapterWindow(UnityAction repaint) {
+		public override void SavePanel() {
+			RepaintPanel(true);
+		}
+
+		public void ChapterWindow() {
 			EditorGUILayout.BeginVertical(
 				"box", 
-				GUILayout.Width(VNToolkitConstants.CHAPTER_WINDOW_FIXED_WIDTH), 
-				GUILayout.Height(VNToolkitConstants.CHAPTER_WINDOW_FIXED_HEIGHT)
+				GUILayout.Width(VNToolkitConstants.CHAPTER_WINDOW_FIXED_WIDTH)
 			);
 
 			if (GUILayout.Button("Chapter", EditorStyles.boldLabel)) {
@@ -69,16 +95,20 @@ namespace VNToolkit {
 				ArrayUtility.Add<string>(ref chapterList, chapterData.chapterName);
 
 				selectedChapterIndx = counter;
+				VNToolkitPanelManager.SharedInstance.Repaint(VNToolkitControlName.FOCUSED_CHAPTER_INFO_PANEL);
+
 				VNToolkitNotifierEditor.TriggerNotification("Chapter Added!");
 			}
 
 			if (GUILayout.Button("Remove", EditorStyles.toolbarButton, GUILayout.Width(50f))) {
-				if (selectedChapterIndx > 0) {
+				if (selectedChapterIndx > -1) {
+					int oldChapterIndx = selectedChapterIndx;
 					ArrayUtility.RemoveAt<bool>(ref showInfoWindow, selectedChapterIndx);
 					ArrayUtility.RemoveAt<VNToolkitChapterData>(ref chapterInfo, selectedChapterIndx);
 					ArrayUtility.RemoveAt<string>(ref chapterList, selectedChapterIndx);
 
-					selectedChapterIndx = -1;
+					selectedChapterIndx = oldChapterIndx - 1;
+					VNToolkitPanelManager.SharedInstance.Repaint(VNToolkitControlName.FOCUSED_CHAPTER_INFO_PANEL);
 					VNToolkitNotifierEditor.TriggerNotification("Chapter Removed!");
 				}
 				else {
@@ -89,47 +119,19 @@ namespace VNToolkit {
 			EditorGUILayout.EndHorizontal();
 
 			chapterScrollView = EditorGUILayout.BeginScrollView(chapterScrollView);
-			selectedChapterIndx = GUILayout.SelectionGrid(selectedChapterIndx, chapterList, 1, EditorStyles.radioButton);
+			int oldIndx = selectedChapterIndx;
+			GUI.SetNextControlName(VNToolkitControlName.FOCUSED_CHAPTER_TOGGLE);
+			selectedChapterIndx = GUILayout.SelectionGrid(selectedChapterIndx, chapterList, 1, EditorStyles.toolbarButton);
+			if (oldIndx != selectedChapterIndx) {
+				GUI.FocusControl(VNToolkitControlName.FOCUSED_CHAPTER_TOGGLE);
+				VNToolkitPanelManager.SharedInstance.Repaint(VNToolkitControlName.FOCUSED_CHAPTER_INFO_PANEL);
+			}
 			EditorGUILayout.EndScrollView();
 
 			EditorGUI.indentLevel--;
 			EditorGUILayout.EndVertical();
 
-			EditorGUILayout.EndVertical();
-		}
-
-		public static void ChapterInformationWindow() {
-			if (selectedChapterIndx < 0)
-				return;
-
-			EditorGUILayout.BeginVertical("box", GUILayout.Width(VNToolkitConstants.CHAPTER_INFO_WINDOW_FIXED_WIDTH));
-
-			EditorGUILayout.BeginHorizontal();
-			if (GUILayout.Button("Chapter Information", EditorStyles.boldLabel)) {
-				showInfoWindow[selectedChapterIndx] = !showInfoWindow[selectedChapterIndx];
-			}
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("ID: " + chapterInfo[selectedChapterIndx].chapterId, EditorStyles.boldLabel);
-			EditorGUILayout.EndHorizontal();
-
-			EditorGUILayout.BeginVertical();
-			chapterInfoAnim.target = showInfoWindow[selectedChapterIndx];
-			if (EditorGUILayout.BeginFadeGroup(chapterInfoAnim.faded)) {
-				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Name", EditorStyles.label, GUILayout.Width(70f));
-				chapterInfo[selectedChapterIndx].chapterName = EditorGUILayout.TextArea(chapterInfo[selectedChapterIndx].chapterName, EditorStyles.textArea);
-				EditorGUILayout.EndHorizontal();
-
-				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Description", EditorStyles.label, GUILayout.Width(70f));
-				chapterInfo[selectedChapterIndx].chapterDesc = EditorGUILayout.TextArea(chapterInfo[selectedChapterIndx].chapterDesc, EditorStyles.textArea);
-				EditorGUILayout.EndHorizontal();
-			}
-
-			EditorGUILayout.EndFadeGroup();
-
-			EditorGUILayout.EndVertical();
-
 			EditorGUILayout.EndVertical();
 		}
 	}

@@ -47,8 +47,10 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Utils\VNToolkitEditorObject.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Utils\VNToolkitEditorUtility.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Utils\VNToolkitPanelAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Utils\VNToolkitPanelManager.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitChapterEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitChapterInfoEditor.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitEditor.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitNotifierEditor.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitPhysicalDataEditor.cs" />

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 namespace VNToolkit {
-	public class VNToolkitDataManager {
+	public class VNToolkitEditorDataCache {
 
 		// Public Variables
 
@@ -28,6 +28,7 @@ namespace VNToolkit {
 		}
 
 		public void Load() {
+			chapterData = new List<VNToolkitChapterData>();
 			string[] fileDirectory = Directory.GetFiles(VNToolkitChapterData.BASE_PATH, "*.json", SearchOption.AllDirectories);
 			for (int i = 0; i < fileDirectory.Length; i++) {
 				fileDirectory[i] = Path.GetFileNameWithoutExtension(fileDirectory[i]);

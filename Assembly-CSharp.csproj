@@ -53,7 +53,8 @@
      <Compile Include="Assets\VN Toolkit\Scripts\Editor Data\VNToolkitChapterData.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor Data\VNToolkitPhysicalData.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\VNToolkitConstants.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\VNToolkitDataManager.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\VNToolkitControlName.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\VNToolkitEditorDataCache.cs" />
      <None Include="Assets\VN Toolkit\Version Number.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>

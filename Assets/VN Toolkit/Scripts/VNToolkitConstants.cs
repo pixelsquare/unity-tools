@@ -11,11 +11,8 @@ namespace VNToolkit {
 		public const double NOTIFICATION_TIMEOUT = 3;
 
 		public const float SCENE_WINDOW_FIXED_WIDTH = 120f;
-		public const float SCENE_WINDOW_FIXED_HEIGHT = 300f;
 
 		public const float CHAPTER_WINDOW_FIXED_WIDTH = 120f;
-		public const float CHAPTER_WINDOW_FIXED_HEIGHT = 300f;
-
 		public const float CHAPTER_INFO_WINDOW_FIXED_WIDTH = 250f;
 
 		// Private Variables
