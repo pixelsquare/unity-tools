@@ -46,15 +46,22 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Utils\VNToolkitEditorObject.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Utils\VNToolkitPanelAbstract.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Utils\VNToolkitPanelManager.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitChapterEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitChapterInfoEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitNotifierEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitPhysicalDataEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNToolkitSceneEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Data\VNProjectData.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Managers\VNDataManager.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Managers\VNFileManager.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Managers\VNPanelManager.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Plain Panels\VNLoadProjectEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Plain Panels\VNNewProjectEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Plain Panels\VNProjectSettingsEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Plain Panels\VNResolutionEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Plain Panels\VNStartEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Utils\VNDataAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Utils\VNEditorUtility.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Utils\VNIData.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Utils\VNIGUI.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Utils\VNPanelAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\Utils\VNPlainPanelAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Editor\VNMainEditor.cs" />
      <None Include="Assets\VN Toolkit\Version Number.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
