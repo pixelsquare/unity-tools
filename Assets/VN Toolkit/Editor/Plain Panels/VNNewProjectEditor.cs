@@ -70,6 +70,7 @@ namespace VNToolkit {
 			public override void PanelSave() {
 				base.PanelSave();
 				VNDataManager.VnProjectData.projectName = projectName;
+				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelSave();
 			}
 
 			public override void PanelLoad() {
