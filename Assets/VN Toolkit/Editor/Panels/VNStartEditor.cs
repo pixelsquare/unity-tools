@@ -38,29 +38,29 @@ namespace VNToolkit {
 				get { return VNControlName.FOCUSED_PANEL_START; }
 			}
 
-			public override System.Action<Rect> WindowGUI {
+			public override System.Action<Rect> OnEditorGUI {
 				get { return StartWindow; }
 			}
 
-			public override void Initialize(UnityAction repaint) {
-				base.Initialize(repaint);
+			public override void OnEditorEnable(UnityAction repaint) {
+				base.OnEditorEnable(repaint);
 
 				if (vnNewProject == null) {
 					vnNewProject = new VNNewProjectEditor();
 				}
-				vnNewProject.Initialize(repaint);
+				vnNewProject.OnEditorEnable(repaint);
 				AddChildren(vnNewProject);
 
 				if (vnLoadProject == null) {
 					vnLoadProject = new VNLoadProjectEditor();
 				}
-				vnLoadProject.Initialize(repaint);
+				vnLoadProject.OnEditorEnable(repaint);
 				AddChildren(vnLoadProject);
 
 				if (vnProjectSettings == null) {
 					vnProjectSettings = new VNProjectSettingsEditor();
 				}
-				vnProjectSettings.Initialize(repaint);
+				vnProjectSettings.OnEditorEnable(repaint);
 				AddChildren(vnProjectSettings);
 
 				//vnNewProject.PanelOpen();
@@ -97,20 +97,20 @@ namespace VNToolkit {
 			}
 
 			public void StartWindow(Rect position) {
-				vnNewProject.DrawGUI(position);
-				vnLoadProject.DrawGUI(position);
-				vnProjectSettings.DrawGUI(position);
+				vnNewProject.OnEditorDraw(position);
+				vnLoadProject.OnEditorDraw(position);
+				vnProjectSettings.OnEditorDraw(position);
 
 				EditorGUILayout.BeginHorizontal();
 				GUILayout.FlexibleSpace();
 				if (vnNewProject.PanelEnabled || vnLoadProject.PanelEnabled) {
-					if (GUILayout.Button(buttonText, GUILayout.Width(VNConstants.WINDOW_BUTTON_WIDTH))) {
+					if (GUILayout.Button(buttonText, GUILayout.Width(VNConstants.EDITOR_BUTTON_WIDTH))) {
 						SubmitNewProject();
 						SubmitLoadProject();
 					}
 				}
 
-				if (GUILayout.Button(closeButtonText, GUILayout.Width(VNConstants.WINDOW_BUTTON_WIDTH))) {
+				if (GUILayout.Button(closeButtonText, GUILayout.Width(VNConstants.EDITOR_BUTTON_WIDTH))) {
 					VNMainEditor.vnWindow.Close();
 				}
 				EditorGUILayout.EndHorizontal();
@@ -129,7 +129,22 @@ namespace VNToolkit {
 				if (!vnLoadProject.PanelEnabled)
 					return;
 
-				Debug.Log(VNDataManager.CompareLoadedData());
+				VNEditorUtility.UpdateAllPanelRecursively(VNPanelManager.CurrentPanel, VN_PANELSTATE.SAVE);
+
+				if (VNDataManager.CompareLoadedData()) {
+					VNPanelManager.SetEditorState(VN_EditorState.MAIN);
+				}
+				else {
+					if (EditorUtility.DisplayDialog(
+						"Changes in Loaded Project Data",
+						"Do you want to save changes?",
+						"Ok!",
+						"Cancel"
+					)) {
+						VNDataManager.SaveData();
+						VNPanelManager.SetEditorState(VN_EditorState.MAIN);
+					}
+				}
 			}
 
 			public void SetButtonText(string text) {

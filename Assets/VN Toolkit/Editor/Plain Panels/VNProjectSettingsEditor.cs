@@ -34,16 +34,16 @@ namespace VNToolkit {
 				get { return VNControlName.FOCUSED_PANEL_PROJECT_SETTINGS; }
 			}
 
-			public override System.Action<Rect> WindowGUI {
+			public override System.Action<Rect> OnEditorGUI {
 				get { return ProjectSettingsWindow; }
 			}
 
-			public override void Initialize(UnityAction repaint) {
-				base.Initialize(repaint);
+			public override void OnEditorEnable(UnityAction repaint) {
+				base.OnEditorEnable(repaint);
 				if (vnResolution == null) {
 					vnResolution = new VNResolutionEditor();
 				}
-				vnResolution.Initialize(repaint);
+				vnResolution.OnEditorEnable(repaint);
 				AddChildren(vnResolution);
 
 				pixelsPerUnitText = string.Empty;
@@ -75,15 +75,15 @@ namespace VNToolkit {
 
 			public override void PanelReset() {
 				base.PanelReset();
-				pixelsPerUnitText = VNConstants.WINDOW_DEFAULT_PIXELS_PER_UNIT.ToString();
+				pixelsPerUnitText = VNConstants.CAMERA_DEFAULT_PIXELS_PER_UNIT.ToString();
 			}
 
 			private void ProjectSettingsWindow(Rect position) {
 				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Pixels per Unit", EditorStyles.label, GUILayout.Width(VNConstants.WINDOW_LABEL_WIDTH));
+				EditorGUILayout.LabelField("Pixels per Unit", EditorStyles.label, GUILayout.Width(VNConstants.EDITOR_LABEL_WIDTH));
 				pixelsPerUnitText = EditorGUILayout.TextField(pixelsPerUnitText, EditorStyles.textField);
 				EditorGUILayout.EndHorizontal();
-				vnResolution.DrawGUI(position);
+				vnResolution.OnEditorDraw(position);
 			}
 		}
 	}

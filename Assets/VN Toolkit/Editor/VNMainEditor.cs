@@ -8,7 +8,7 @@ namespace VNToolkit {
 	namespace VNEditor {
 		using VNUtility;
 
-		public enum VNEditorState {
+		public enum VN_EditorState {
 			START,
 			MAIN
 		}
@@ -19,6 +19,7 @@ namespace VNToolkit {
 
 			// Private Variables
 			private string versionNumber;
+			private bool enabled;
 
 			// Static Variables
 			public static VNMainEditor vnWindow;
@@ -28,9 +29,8 @@ namespace VNToolkit {
 				Debug.Log("VN Toolkit Window Initialized!");
 				vnWindow = (VNMainEditor)EditorWindow.GetWindow(typeof(VNMainEditor));
 				vnWindow.title = VNConstants.MENU_TITLE;
-				vnWindow.position = new Rect(Screen.width * 0.1f, Screen.height * 0.1f, VNConstants.WINDOW_START_WIDTH, VNConstants.WINDOW_START_HEIGHT);
-				vnWindow.minSize = new Vector2(VNConstants.WINDOW_START_WIDTH, VNConstants.WINDOW_START_HEIGHT);
-
+				vnWindow.SetWindowResolution(VNConstants.WINDOW_START_WIDTH, VNConstants.WINDOW_START_HEIGHT);
+				
 				vnWindow.Show();
 			}
 
@@ -39,11 +39,19 @@ namespace VNToolkit {
 				hideFlags = HideFlags.HideAndDontSave;
 				versionNumber = File.ReadAllText(Application.dataPath + VNConstants.VERSION_PATH);
 				VNPanelManager.Initialize(Repaint);
+				enabled = true;
+			}
+
+			private void OnDisable() {
+				Debug.Log("VN Toolkit Window Disabled!");
+				enabled = false;
 			}
 
 			private void OnGUI() {
 				VNPanelManager.DrawPanels(position);
 				WindowFooter();
+
+				if (GUI.changed && enabled) EditorUtility.SetDirty(vnWindow);
 			}
 
 			private void WindowFooter() {

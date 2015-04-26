@@ -35,12 +35,12 @@ namespace VNToolkit {
 				get { return VNControlName.FOCUSED_PANEL_LOAD_PROJECT; }
 			}
 
-			public override System.Action<Rect> WindowGUI {
+			public override System.Action<Rect> OnEditorGUI {
 				get { return LoadProjectWindow; }
 			}
 
-			public override void Initialize(UnityAction repaint) {
-				base.Initialize(repaint);
+			public override void OnEditorEnable(UnityAction repaint) {
+				base.OnEditorEnable(repaint);
 				projectName = string.Empty;
 				projectDirectory = string.Empty;
 				projectFolder = null;
@@ -50,19 +50,21 @@ namespace VNToolkit {
 				base.PanelOpen();
 				parent.GetChild(VNConstants.PANEL_NEW_PROJECT_NAME).PanelClose();
 				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelOpen();
-				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).GetChildren().ForEach(a => a.PanelOpen());
+				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.OPEN);
 
 				if (projectFolder != null && VNFileManager.IsPathValid()) {
 					UpdateProjectData();
 					PanelLoad();
 					parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelLoad();
+					VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.LOAD);
 				}
 				else {
 					PanelClear();
 					parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelClear();
+					VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
 				}
 
-				if (VNPanelManager.VnEditorState == VNEditorState.START) {
+				if (VNPanelManager.VnEditorState == VN_EditorState.START) {
 					VNStartEditor startEditor = VNPanelManager.CurrentPanel as VNStartEditor;
 					startEditor.SetButtonText("Load Project");
 				}
@@ -71,12 +73,14 @@ namespace VNToolkit {
 			public override void PanelClose() {
 				base.PanelClose();
 				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelClear();
+				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
 			}
 
 			public override void PanelSave() {
 				base.PanelSave();
 				VNDataManager.VnProjectData.projectName = projectName;
 				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelSave();
+				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.SAVE);
 			}
 
 			public override void PanelLoad() {
@@ -97,26 +101,37 @@ namespace VNToolkit {
 
 			public void LoadProjectWindow(Rect position) {
 				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Project Name", EditorStyles.label, GUILayout.Width(VNConstants.WINDOW_LABEL_WIDTH));
+				EditorGUILayout.LabelField("Project Name", EditorStyles.label, GUILayout.Width(VNConstants.EDITOR_LABEL_WIDTH));
 				projectName = EditorGUILayout.TextField(projectName, EditorStyles.textField);
 				EditorGUILayout.EndHorizontal();
 
 				Object folder = projectFolder;
 				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Project Folder", EditorStyles.label, GUILayout.Width(VNConstants.WINDOW_LABEL_WIDTH));
+				EditorGUILayout.LabelField("Project Folder", EditorStyles.label, GUILayout.Width(VNConstants.EDITOR_LABEL_WIDTH));
 				projectFolder = EditorGUILayout.ObjectField(projectFolder, typeof(Object), false);
 				EditorGUILayout.EndHorizontal();
+
+				if (projectFolder != null) {
+					EditorGUILayout.BeginHorizontal();
+					GUILayout.FlexibleSpace();
+					if (GUILayout.Button("Clear", GUILayout.Width(VNConstants.EDITOR_BUTTON_WIDTH))) {
+						projectFolder = null;
+					}
+					EditorGUILayout.EndHorizontal();
+				}
 
 				if (folder != projectFolder) {
 					if (projectFolder != null) {
 						UpdateProjectData();
 						PanelLoad();
 						parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelLoad();
+						VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.LOAD);
 					}
 					
 					if(!VNFileManager.IsPathValid() || projectFolder == null) {
 						PanelClear();
 						parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelClear();
+						VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
 					}
 				}
 			}

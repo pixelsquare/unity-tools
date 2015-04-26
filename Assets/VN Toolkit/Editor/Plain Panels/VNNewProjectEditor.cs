@@ -37,12 +37,12 @@ namespace VNToolkit {
 				get { return VNControlName.FOCUSED_PANEL_NEW_PROJECT; }
 			}
 
-			public override System.Action<Rect> WindowGUI {
+			public override System.Action<Rect> OnEditorGUI {
 				get { return NewProjectWindow; }
 			}
 
-			public override void Initialize(UnityAction repaint) {
-				base.Initialize(repaint);
+			public override void OnEditorEnable(UnityAction repaint) {
+				base.OnEditorEnable(repaint);
 				projectName = string.Empty;
 				projectDirectory = string.Empty;
 			}
@@ -51,12 +51,13 @@ namespace VNToolkit {
 				base.PanelOpen();
 				parent.GetChild(VNConstants.PANEL_LOAD_PROJECT_NAME).PanelClose();
 				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelOpen();
-				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).GetChildren().ForEach(a => a.PanelOpen());
+				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.OPEN);
 
 				PanelReset();
 				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelReset();
+				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.RESET);
 
-				if (VNPanelManager.VnEditorState == VNEditorState.START) {
+				if (VNPanelManager.VnEditorState == VN_EditorState.START) {
 					VNStartEditor startEditor = VNPanelManager.CurrentPanel as VNStartEditor;
 					startEditor.SetButtonText("New Project");
 				}
@@ -65,12 +66,14 @@ namespace VNToolkit {
 			public override void PanelClose() {
 				base.PanelClose();
 				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelClear();
+				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
 			}
 
 			public override void PanelSave() {
 				base.PanelSave();
 				VNDataManager.VnProjectData.projectName = projectName;
 				parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME).PanelSave();
+				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNConstants.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.SAVE);
 			}
 
 			public override void PanelLoad() {
@@ -93,12 +96,12 @@ namespace VNToolkit {
 
 			public void NewProjectWindow(Rect position) {
 				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Project Name", EditorStyles.label, GUILayout.Width(VNConstants.WINDOW_LABEL_WIDTH));
+				EditorGUILayout.LabelField("Project Name", EditorStyles.label, GUILayout.Width(VNConstants.EDITOR_LABEL_WIDTH));
 				projectName = EditorGUILayout.TextField(projectName, EditorStyles.textField);
 				EditorGUILayout.EndHorizontal();
 
 				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Project Directory", EditorStyles.label, GUILayout.Width(VNConstants.WINDOW_LABEL_WIDTH));
+				EditorGUILayout.LabelField("Project Directory", EditorStyles.label, GUILayout.Width(VNConstants.EDITOR_LABEL_WIDTH));
 				projectDirectory = Application.dataPath + VNConstants.PROJECT_PATH + "/" + projectName;
 				projectDirectory = EditorGUILayout.TextField(projectDirectory, EditorStyles.textField);
 				EditorGUILayout.EndHorizontal();

@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace VNToolkit {
 	namespace VNEditor {
@@ -15,24 +16,61 @@ namespace VNToolkit {
 					if (obj1 == null || obj2 == null)
 						return false;
 
-					foreach (PropertyInfo property in type.GetProperties()) {
+					foreach (MemberInfo member in type.GetMembers()) {
 						string obj1Val = string.Empty;
 						string obj2Val = string.Empty;
 
-						if (type.GetProperty(property.Name).GetValue(obj1, null) != null) {
-							obj1Val = type.GetProperty(property.Name).GetValue(obj1, null).ToString();
+						// Reflection on class fields
+						if (member.MemberType == MemberTypes.Field) {
+							foreach (FieldInfo field in type.GetFields()) {
+								if (type.GetField(field.Name).GetValue(obj1) != null) {
+									obj1Val = type.GetField(field.Name).GetValue(obj1).ToString();
+								}
+
+								if (type.GetField(field.Name).GetValue(obj2) != null) {
+									obj2Val = type.GetField(field.Name).GetValue(obj2).ToString();
+								}
+
+								if (obj1Val.Trim() != obj2Val.Trim()) {
+									return false;
+								}
+							}
 						}
 
-						if (type.GetProperty(property.Name).GetValue(obj2, null) != null) {
-							obj2Val = type.GetProperty(property.Name).GetValue(obj2, null).ToString();
-						}
+						// Reflection on class properties
+						if (member.MemberType == MemberTypes.Property) {
+							foreach (PropertyInfo property in type.GetProperties()) {
+								if (type.GetProperty(property.Name).GetValue(obj1, null) != null) {
+									obj1Val = type.GetProperty(property.Name).GetValue(obj1, null).ToString();
+								}
 
-						if (obj1Val.Trim() != obj2Val.Trim()) {
-							return false;
+								if (type.GetProperty(property.Name).GetValue(obj2, null) != null) {
+									obj2Val = type.GetProperty(property.Name).GetValue(obj2, null).ToString();
+								}
+
+								if (obj1Val.Trim() != obj2Val.Trim()) {
+									return false;
+								}
+							}
 						}
 					}
 
 					return true;
+				}
+
+				public static void UpdateAllPanelRecursively(VNIPanel panel, VN_PANELSTATE state) {
+					foreach (VNIPanel child in panel.children) {
+						if (child != null) {
+							if (state == VN_PANELSTATE.OPEN) { child.PanelOpen(); }
+							if (state == VN_PANELSTATE.CLOSE) { child.PanelClose(); }
+							if (state == VN_PANELSTATE.SAVE) { child.PanelSave(); }
+							if (state == VN_PANELSTATE.LOAD) { child.PanelLoad(); }
+							if (state == VN_PANELSTATE.CLEAR) { child.PanelClear(); }
+							if (state == VN_PANELSTATE.RESET) { child.PanelReset(); }
+
+							UpdateAllPanelRecursively(child, state);
+						}
+					}
 				}
 			}
 		}

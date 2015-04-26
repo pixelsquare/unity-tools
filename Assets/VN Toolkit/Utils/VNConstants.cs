@@ -14,9 +14,11 @@ namespace VNToolkit {
 				public const string VERSION_PATH = "/VN Toolkit/Version Number.txt";
 				public const string DATA_FILE_EXT = ".json";
 
-				public const string WINDOW_STYLE_BOX = "box";
-				public const float WINDOW_LABEL_WIDTH = 100f;
-				public const float WINDOW_BUTTON_WIDTH = 100f;
+				public const string DEFAULT_STYLE_BOX = "box";
+				public const float EDITOR_LABEL_WIDTH = 100f;
+				public const float EDITOR_BUTTON_WIDTH = 100f;
+
+				public const float INSPECTOR_LABEL_WIDTH = 150f;
 
 				// General
 				public const string NEW_PROJECT_NAME = "New Visual Novel Project";
@@ -25,10 +27,11 @@ namespace VNToolkit {
 				public const float WINDOW_START_WIDTH = 600f;
 				public const float WINDOW_START_HEIGHT = 400f;
 
-				public const float WINDOW_DEFAULT_WIDTH = 1024f;
-				public const float WINDOW_DEFAULT_HEIGHT = 768f;
+				public const float CAMERA_DEFAULT_WIDTH = 1024f;
+				public const float CAMERA_DEFAULT_HEIGHT = 768f;
 
-				public const int WINDOW_DEFAULT_PIXELS_PER_UNIT = 100;
+				public const int CAMERA_DEFAULT_PIXELS_PER_UNIT = 100;
+				public const string CAMERA_LAYER_MASK = "VN_LAYER";
 
 				// Panels
 				public const string PANEL_START_NAME = "Visual Novel Toolkit";

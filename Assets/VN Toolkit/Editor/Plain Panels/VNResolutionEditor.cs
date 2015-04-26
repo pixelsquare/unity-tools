@@ -33,12 +33,12 @@ namespace VNToolkit {
 				get { return VNControlName.FOCUSED_PANEL_RESOLUTION; }
 			}
 
-			public override System.Action<Rect> WindowGUI {
+			public override System.Action<Rect> OnEditorGUI {
 				get { return ResolutionWindow; }
 			}
 
-			public override void Initialize(UnityAction repaint) {
-				base.Initialize(repaint);
+			public override void OnEditorEnable(UnityAction repaint) {
+				base.OnEditorEnable(repaint);
 
 				widthText = string.Empty;
 				heightText = string.Empty;
@@ -72,18 +72,18 @@ namespace VNToolkit {
 
 			public override void PanelReset() {
 				base.PanelReset();
-				widthText = VNConstants.WINDOW_DEFAULT_WIDTH.ToString();
-				heightText = VNConstants.WINDOW_DEFAULT_HEIGHT.ToString();
+				widthText = VNConstants.CAMERA_DEFAULT_WIDTH.ToString();
+				heightText = VNConstants.CAMERA_DEFAULT_HEIGHT.ToString();
 			}
 
 			private void ResolutionWindow(Rect position) {
 				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Width", GUILayout.Width(VNConstants.WINDOW_LABEL_WIDTH));
+				EditorGUILayout.LabelField("Width", GUILayout.Width(VNConstants.EDITOR_LABEL_WIDTH));
 				widthText = EditorGUILayout.TextField(widthText, EditorStyles.textField);
 				EditorGUILayout.EndHorizontal();
 
 				EditorGUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Height", GUILayout.Width(VNConstants.WINDOW_LABEL_WIDTH));
+				EditorGUILayout.LabelField("Height", GUILayout.Width(VNConstants.EDITOR_LABEL_WIDTH));
 				heightText = EditorGUILayout.TextField(heightText, EditorStyles.textField);
 				EditorGUILayout.EndHorizontal();
 			}

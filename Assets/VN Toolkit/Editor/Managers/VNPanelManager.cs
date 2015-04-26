@@ -10,11 +10,11 @@ namespace VNToolkit {
 		public class VNPanelManager {
 
 			// Public Variables
-			public static VNIGUI CurrentPanel { get; set; }
-			public static VNEditorState VnEditorState { get { return vnEditorState; } }
+			public static VNIPanel CurrentPanel { get; set; }
+			public static VN_EditorState VnEditorState { get { return vnEditorState; } }
 
 			// Private Variables
-			private static VNEditorState vnEditorState;
+			private static VN_EditorState vnEditorState;
 			private static VNStartEditor VnStartEditor { get; set; }
 			
 			// Static Variables
@@ -23,23 +23,25 @@ namespace VNToolkit {
 				if (VnStartEditor == null) {
 					VnStartEditor = new VNStartEditor();
 				}
-				VnStartEditor.Initialize(repaint);
+				VnStartEditor.OnEditorEnable(repaint);
+
+				vnEditorState = VN_EditorState.START;
 			}
 
 			public static void DrawPanels(Rect position) {
-				if (vnEditorState == VNEditorState.START) {
-					VnStartEditor.DrawGUI(position);
+				if (vnEditorState == VN_EditorState.START) {
+					VnStartEditor.OnEditorDraw(position);
 
 					if (CurrentPanel != VnStartEditor) {
 						CurrentPanel = VnStartEditor;
 					}
 				}
-				else if (vnEditorState == VNEditorState.MAIN) {
+				else if (vnEditorState == VN_EditorState.MAIN) {
 
 				}
 			}
 
-			public static void SetEditorState(VNEditorState state) {
+			public static void SetEditorState(VN_EditorState state) {
 				vnEditorState = state;
 			}
 		}

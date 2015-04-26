@@ -8,11 +8,12 @@ using System.Collections.Generic;
 namespace VNToolkit {
 	namespace VNEditor {
 		namespace VNUtility {
-			public abstract class VNPanelAbstract : VNIGUI {
+			public abstract class VNPanelAbstract : VNIPanel {
 
 				// Public Variables
-				public VNIGUI parent { get; set; }
-				public List<VNIGUI> children { get; set; }
+				public VNIPanel parent { get; set; }
+				public List<VNIPanel> children { get; set; }
+				//public Dictionary<string, VNIPanel> children { get; set; }
 
 				public bool PanelActive { get { return panelActive; } }
 				public bool PanelEnabled { get { return panelEnabled; } }
@@ -35,9 +36,9 @@ namespace VNToolkit {
 
 				public abstract string PanelControlName { get; }
 
-				public abstract System.Action<Rect> WindowGUI { get; }
+				public abstract System.Action<Rect> OnEditorGUI { get; }
 
-				public virtual void Initialize(UnityAction repaint) {
+				public virtual void OnEditorEnable(UnityAction repaint) {
 					Debug.Log("[PANEL] " + PanelTitle + " Initialized!");
 					Repaint = repaint;
 					panelEnabled = false;
@@ -51,7 +52,7 @@ namespace VNToolkit {
 
 					panelFlexibleWidth = PanelWidth < 0;
 					parent = null;
-					children = new List<VNIGUI>();
+					children = new List<VNIPanel>();
 					panelActive = true;
 				}
 
@@ -65,60 +66,40 @@ namespace VNToolkit {
 					panelEnabled = false;
 				}
 
-				public virtual void PanelSave() {
-					Debug.Log("[PANEL] " + PanelTitle + " Save!");
-					children.ForEach(a => a.PanelSave());
-				}
+				public virtual void PanelSave() { Debug.Log("[PANEL] " + PanelTitle + " Save!"); }
 
-				public virtual void PanelLoad() {
-					Debug.Log("[PANEL] " + PanelTitle + " Load!");
-					children.ForEach(a => a.PanelLoad());
-				}
+				public virtual void PanelLoad() { Debug.Log("[PANEL] " + PanelTitle + " Load!"); }
 
-				public virtual void PanelClear() {
-					Debug.Log("[PANEL] " + PanelTitle + " Clear!");
-					children.ForEach(a => a.PanelClear());
-				}
+				public virtual void PanelClear() { Debug.Log("[PANEL] " + PanelTitle + " Clear!"); }
 
-				public virtual void PanelReset() {
-					Debug.Log("[PANEL] " + PanelTitle + " Reset!");
-					children.ForEach(a => a.PanelReset());
-				}
+				public virtual void PanelReset() { Debug.Log("[PANEL] " + PanelTitle + " Reset!"); }
 
-				public void DrawGUI(Rect position) {
+				public void OnEditorDraw(Rect position) {
 					if (!PanelActive)
 						return;
 
 					// Back panel
 					GUI.SetNextControlName(PanelControlName);
-					EditorGUILayout.BeginVertical(VNConstants.WINDOW_STYLE_BOX);
+					EditorGUILayout.BeginVertical(VNConstants.DEFAULT_STYLE_BOX);
 
 					// Front panel
-					if (panelFlexibleWidth) {
-						EditorGUILayout.BeginVertical(VNConstants.WINDOW_STYLE_BOX);
-					}
-					else {
-						EditorGUILayout.BeginVertical(VNConstants.WINDOW_STYLE_BOX, GUILayout.Width(PanelWidth));
-					}
+					if (panelFlexibleWidth) { EditorGUILayout.BeginVertical(VNConstants.DEFAULT_STYLE_BOX);	}
+					else { EditorGUILayout.BeginVertical(VNConstants.DEFAULT_STYLE_BOX, GUILayout.Width(PanelWidth)); }
 
 					// Panel Trigger
 					EditorGUILayout.BeginHorizontal();
 					if (GUILayout.Button(PanelTitle, EditorStyles.boldLabel) && IsPanelFoldable) {
 						panelEnabled = !panelEnabled;
 
-						if (panelEnabled) {
-							PanelOpen();
-						}
-						else {
-							PanelClose();
-						}
+						if (panelEnabled)	{ PanelOpen(); }
+						else				{ PanelClose(); }
 					}
 					EditorGUILayout.EndHorizontal();
 
 					// Panel
 					panelAnim.target = panelEnabled;
 					if (EditorGUILayout.BeginFadeGroup(panelAnim.faded)) {
-						if (WindowGUI != null) WindowGUI(position);
+						if (OnEditorGUI != null) OnEditorGUI(position);
 					}
 
 					EditorGUILayout.EndFadeGroup();
@@ -131,16 +112,16 @@ namespace VNToolkit {
 					panelActive = active;
 				}
 
-				public void AddChildren(VNIGUI child) {
+				public void AddChildren(VNIPanel child) {
 					child.parent = this;
 					children.Add(child);
 				}
 
-				public List<VNIGUI> GetChildren() {
+				public List<VNIPanel> GetChildren() {
 					return children;
 				}
 
-				public VNIGUI GetChild(string title) {
+				public VNIPanel GetChild(string title) {
 					return children.Find(c => c.PanelTitle == title);
 				}
 			}

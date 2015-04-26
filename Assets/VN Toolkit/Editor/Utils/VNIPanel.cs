@@ -6,11 +6,21 @@ using System.Collections.Generic;
 namespace VNToolkit {
 	namespace VNEditor {
 		namespace VNUtility {
-			public interface VNIGUI {
+
+			public enum VN_PANELSTATE {
+				OPEN,
+				CLOSE,
+				SAVE,
+				LOAD,
+				CLEAR,
+				RESET
+			}
+
+			public interface VNIPanel {
 
 				// Public Variables
-				VNIGUI parent { get; set; }
-				List<VNIGUI> children { get; set; }
+				VNIPanel parent { get; set; }
+				List<VNIPanel> children { get; set; }
 
 				// When panel is shown
 				bool PanelActive { get; }
@@ -28,22 +38,21 @@ namespace VNToolkit {
 
 				string PanelControlName { get; }
 
-				System.Action<Rect> WindowGUI { get; }
+				System.Action<Rect> OnEditorGUI  { get; }
 
-				void Initialize(UnityAction repaint);
+				void OnEditorEnable(UnityAction repaint);
 				void PanelOpen();
 				void PanelClose();
 				void PanelSave();
 				void PanelLoad();
-
 				void PanelClear();
 				void PanelReset();
 
 				void SetPanelActive(bool active);
 
-				void AddChildren(VNIGUI child);
-				List<VNIGUI> GetChildren();
-				VNIGUI GetChild(string title);
+				void AddChildren(VNIPanel child);
+				List<VNIPanel> GetChildren();
+				VNIPanel GetChild(string title);
 			}
 		}
 	}
