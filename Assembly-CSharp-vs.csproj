@@ -50,19 +50,26 @@
      <Compile Include="Assets\Utilities\ObjectListener.cs" />
      <Compile Include="Assets\Utilities\ObjectQueue.cs" />
      <Compile Include="Assets\Utilities\Parameters.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Custom Inspector\Utils\VNIPanelInspector.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Custom Inspector\Utils\VNPanelInspectorAbstract.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Custom Inspector\VNMainInspector.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Dialogue\VNDialogueManager.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Dialogue\VNDialogueReader.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Dialogue\VNDialogueWriter.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNCamera.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNProjectSettings.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNIData.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNIPanel.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Custom Inspector\Utils\VNPanelInspectorAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Custom Inspector\VNMainInspector.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueManager.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueReader.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueWriter.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\VNCamera.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\VNProjectSettings.cs" />
      <Compile Include="Assets\VN Toolkit\Utils\VNConstants.cs" />
      <Compile Include="Assets\VN Toolkit\Utils\VNControlName.cs" />
+     <Compile Include="Assets\VN Toolkit\Utils\VNDataAbstract.cs" />
      <Compile Include="Assets\VN Toolkit\Utils\VNDataName.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNPanelName.cs" />
+     <Compile Include="Assets\VN Toolkit\Utils\VNDebugger.cs" />
+     <Compile Include="Assets\VN Toolkit\Utils\VNEditorUtility.cs" />
+     <Compile Include="Assets\VN Toolkit\Utils\VNPanelAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Utils\VNPanelInfo.cs" />
+     <Compile Include="Assets\VN Toolkit\Utils\VNPlainPanelAbstract.cs" />
      <None Include="Assets\VN Toolkit\Version Number.txt" />
+     <None Include="Assets\VN Toolkit\VN Toolkit Script Hierarchy.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.4/UnityEngine.UI.dll</HintPath>
  </Reference>

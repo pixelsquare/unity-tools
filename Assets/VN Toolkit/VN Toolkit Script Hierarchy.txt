@@ -1,0 +1,8 @@
+VN Toolkit Script Hierarchy
+
+VNToolkit
+  - VNDialogue
+  - VNEditor
+       - VNUtility
+  - VNUtility
+       - VNCustomInspector

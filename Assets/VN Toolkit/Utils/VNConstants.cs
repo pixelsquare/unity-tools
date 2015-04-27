@@ -32,23 +32,6 @@ namespace VNToolkit {
 
 				public const int CAMERA_DEFAULT_PIXELS_PER_UNIT = 100;
 				public const string CAMERA_LAYER_MASK = "VN_LAYER";
-
-				// Panels
-				public const string PANEL_START_NAME = "Visual Novel Toolkit";
-				public const float PANEL_START_WIDTH = -1f;
-
-				public const string PANEL_NEW_PROJECT_NAME = "New Project";
-				public const float PANEL_NEW_PROJECT_WIDTH = -1f;
-
-				public const string PANEL_LOAD_PROJECT_NAME = "Load Project";
-				public const float PANEL_LOAD_PROJECT_WIDTH = -1f;
-
-				public const string PANEL_PROJECT_SETTINGS_NAME = "Settings";
-				public const float PANEL_PROJECT_SETTINGS_WIDTH = -1f;
-
-				// Plain Panels
-				public const string PANEL_RESOLUTION_NAME = "Resolution";
-				public const float PANEL_RESOLUTION_WIDTH = -1f;
 			}
 		}
 	}
