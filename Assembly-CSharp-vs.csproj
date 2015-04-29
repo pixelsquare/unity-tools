@@ -52,8 +52,8 @@
      <Compile Include="Assets\Utilities\Parameters.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNIData.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNIPanel.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Custom Inspector\Utils\VNPanelInspectorAbstract.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Custom Inspector\VNMainInspector.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueInfo.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueManager.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueReader.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueWriter.cs" />
@@ -67,7 +67,7 @@
      <Compile Include="Assets\VN Toolkit\Utils\VNEditorUtility.cs" />
      <Compile Include="Assets\VN Toolkit\Utils\VNPanelAbstract.cs" />
      <Compile Include="Assets\VN Toolkit\Utils\VNPanelInfo.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNPlainPanelAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Utils\VNPanelMonoAbstract.cs" />
      <None Include="Assets\VN Toolkit\Version Number.txt" />
      <None Include="Assets\VN Toolkit\VN Toolkit Script Hierarchy.txt" />
  <Reference Include="UnityEngine.UI">

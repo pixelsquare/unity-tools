@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 using UnityEditor;
 using UnityEngine.Events;
 using UnityEditor.AnimatedValues;
 using System.Collections.Generic;
+using VNToolkit.VNEditor.VNUtility;
 
-namespace VNToolkit.VNEditor.VNUtility {
+namespace VNToolkit.VNUtility.VNCustomInspector {
 
-	public abstract class VNPanelAbstract : VNIPanel {
+	public abstract class VNPanelMonoAbstract : MonoBehaviour, VNIPanel {
 
 		// Public Variables
 		public VNIPanel parent { get; set; }
@@ -25,9 +27,11 @@ namespace VNToolkit.VNEditor.VNUtility {
 		protected AnimBool panelAnim;
 		protected UnityAction Repaint { get; set; }
 
-		// Static Variables
+		private Texture2D panelRevertIcon;
+		private Texture2D panelRefreshIcon;
 
-		public abstract bool IsPanelFoldable { get; }
+		// Static Variables
+		protected abstract bool IsPanelFoldable { get; }
 
 		protected abstract bool IsPanelFlexible { get; }
 
@@ -37,16 +41,13 @@ namespace VNToolkit.VNEditor.VNUtility {
 
 		public abstract string PanelControlName { get; }
 
-		public abstract System.Action<Rect> OnPanelGUI { get; }
+		protected abstract System.Action OnPanelGUI { get; }
+
+		protected abstract bool IsRevertButtonEnabled { get; }
 
 		public virtual void OnPanelEnable(UnityAction repaint) {
-			Debug.Log("[PANEL] " + PanelTitle + " Initialized!");
 			Repaint = repaint;
-			panelEnabled = false;
-
-			if (!IsPanelFoldable) {
-				panelEnabled = true;
-			}
+			panelEnabled = true;
 
 			panelAnim = new AnimBool(panelEnabled);
 			panelAnim.valueChanged.AddListener(Repaint);
@@ -54,6 +55,9 @@ namespace VNToolkit.VNEditor.VNUtility {
 			parent = null;
 			children = new List<VNIPanel>();
 			panelActive = true;
+
+			panelRevertIcon = AssetDatabase.LoadAssetAtPath("Assets/VN Toolkit/Icons/left149.png", typeof(Texture2D)) as Texture2D;
+			panelRefreshIcon = AssetDatabase.LoadAssetAtPath("Assets/VN Toolkit/Icons/arrows91.png", typeof(Texture2D)) as Texture2D;
 		}
 
 		protected virtual void PanelOpen() {
@@ -74,7 +78,7 @@ namespace VNToolkit.VNEditor.VNUtility {
 
 		protected virtual void PanelReset() { Debug.Log("[PANEL] " + PanelTitle + " Reset!"); }
 
-		public void OnPanelDraw(Rect position) {
+		public void OnPanelDraw() {
 			if (!PanelActive || OnPanelGUI == null)
 				return;
 
@@ -82,6 +86,7 @@ namespace VNToolkit.VNEditor.VNUtility {
 			if (!IsPanelFlexible && PanelWidth > 0) { EditorGUILayout.BeginVertical(VNConstants.DEFAULT_STYLE_BOX, GUILayout.Width(PanelWidth)); }
 			else { EditorGUILayout.BeginVertical(VNConstants.DEFAULT_STYLE_BOX); }
 
+			// Panel Trigger
 			EditorGUILayout.BeginHorizontal();
 			if (GUILayout.Button(PanelTitle, EditorStyles.boldLabel) && IsPanelFoldable) {
 				panelEnabled = !panelEnabled;
@@ -89,14 +94,37 @@ namespace VNToolkit.VNEditor.VNUtility {
 				if (panelEnabled) { PanelOpen(); }
 				else { PanelClose(); }
 			}
+
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button(panelRevertIcon, GUILayout.Width(22f), GUILayout.Height(22f)) && !IsRevertButtonEnabled) {
+				PanelRevert();
+			}
+
+			if (GUILayout.Button(panelRefreshIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
+				PanelRefresh();
+			}
 			EditorGUILayout.EndHorizontal();
 
+			// Panel
 			panelAnim.target = panelEnabled;
 			if (EditorGUILayout.BeginFadeGroup(panelAnim.faded)) {
-				if (OnPanelGUI != null) OnPanelGUI(position);
+				EditorGUI.indentLevel++;
+				if (OnPanelGUI != null) OnPanelGUI();
+				EditorGUI.indentLevel--;
 			}
+
 			EditorGUILayout.EndFadeGroup();
+
 			EditorGUILayout.EndVertical();
+		}
+
+		private void PanelRevert() {
+			OnPanelEnable(Repaint);
+			PanelRefresh();
+		}
+
+		private void PanelRefresh() {
+			EditorUtility.SetDirty(this);
 		}
 
 		public void SetPanelActive(bool active) {

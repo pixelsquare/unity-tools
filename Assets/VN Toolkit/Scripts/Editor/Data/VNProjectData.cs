@@ -1,54 +1,52 @@
 ﻿using UnityEngine;
 using System.Collections;
+using JsonFx.Json;
+using VNToolkit.VNEditor.VNUtility;
 
-namespace VNToolkit {
-	namespace VNEditor {
-		using VNUtility;
-		using JsonFx.Json;
+namespace VNToolkit.VNEditor {
 
-		[SerializeField]
-		[JsonName("VNProjectData")]
-		public class VNProjectData : VNDataAbstract<VNProjectData>, VNIData {
+	[SerializeField]
+	[JsonName("VNProjectData")]
+	public class VNProjectData : VNDataAbstract<VNProjectData>, VNIData {
 
-			// Public Variables
+		// Public Variables
 
-			// Private Variables
-			public string projectName;
+		// Private Variables
+		public string projectName;
 
-			public int projectWidth;
+		public int projectWidth;
 
-			public int projectHeight;
+		public int projectHeight;
 
-			public int projectPixelsPerUnit;
+		public int projectPixelsPerUnit;
 
-			// Static Variables
+		// Static Variables
 
-			public override int DATA_ID { get; set; }
+		public override int DATA_ID { get; set; }
 
-			public override string DATA_TITLE {
-				get { return VNDataName.PROJECT_SETTINGS_NAME; }
-			}
+		public override string DATA_TITLE {
+			get { return VNDataName.PROJECT_SETTINGS_NAME; }
+		}
 
-			public override string BASE_PATH {
-				get { return VNFileManager.STREAM_PATH; }
-			}
+		public override string BASE_PATH {
+			get { return VNFileManager.STREAM_PATH; }
+		}
 
-			public override string FILE_EXT {
-				get { return VNConstants.DATA_FILE_EXT; }
-			}
+		public override string FILE_EXT {
+			get { return VNConstants.DATA_FILE_EXT; }
+		}
 
-			public override string FILE_FORMAT {
-				get { return VNDataName.PROJECT_SETTING_FORMAT; }
-			}
+		public override string FILE_FORMAT {
+			get { return VNDataName.PROJECT_SETTING_FORMAT; }
+		}
 
-			public override VNProjectData Clone() {
-				VNProjectData clone = base.Clone();
-				clone.projectName = this.projectName;
-				clone.projectWidth = this.projectWidth;
-				clone.projectHeight = this.projectHeight;
-				clone.projectPixelsPerUnit = this.projectPixelsPerUnit;
-				return clone;
-			}
+		public override VNProjectData Clone() {
+			VNProjectData clone = base.Clone();
+			clone.projectName = this.projectName;
+			clone.projectWidth = this.projectWidth;
+			clone.projectHeight = this.projectHeight;
+			clone.projectPixelsPerUnit = this.projectPixelsPerUnit;
+			return clone;
 		}
 	}
 }

@@ -1,42 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
+using VNToolkit.VNEditor.VNUtility;
 
-namespace VNToolkit {
-	namespace VNEditor {
-		using VNUtility;
-		using System.IO;
-		using System.Collections.Generic;
+namespace VNToolkit.VNEditor {
 
-		public class VNDataManager {
+	public class VNDataManager {
 
-			// Static Variables
-			private static VNProjectData vnLoadedProjectData;
-			private static VNProjectData vnProjectData;
-			public static VNProjectData VnProjectData {
-				get {
-					if (vnProjectData == null)
-						vnProjectData = new VNProjectData();
+		// Static Variables
+		private static VNProjectData vnLoadedProjectData;
+		private static VNProjectData vnProjectData;
+		public static VNProjectData VnProjectData {
+			get {
+				if (vnProjectData == null)
+					vnProjectData = new VNProjectData();
 
-					return vnProjectData;
-				}
-
-				set { vnProjectData = value; }
+				return vnProjectData;
 			}
 
-			public static void SaveData() {
-				VnProjectData.Save();
-			}
+			set { vnProjectData = value; }
+		}
 
-			public static void LoadData() {
-				VnProjectData = VnProjectData.Load() as VNProjectData;
+		public static void SaveData() {
+			VnProjectData.Save();
+		}
 
-				vnLoadedProjectData = new VNProjectData();
-				vnLoadedProjectData = VnProjectData.Clone() as VNProjectData;
-			}
+		public static void LoadData() {
+			VnProjectData = VnProjectData.Load() as VNProjectData;
 
-			public static bool CompareLoadedData() {
-				return VNEditorUtility.Compare<VNProjectData>(vnProjectData, vnLoadedProjectData);
-			}
+			vnLoadedProjectData = new VNProjectData();
+			vnLoadedProjectData = VnProjectData.Clone() as VNProjectData;
+		}
+
+		public static bool CompareLoadedData() {
+			return VNEditorUtility.Compare<VNProjectData>(vnProjectData, vnLoadedProjectData);
 		}
 	}
 }

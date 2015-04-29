@@ -2,52 +2,51 @@
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using VNToolkit.VNEditor.VNUtility;
 
-namespace VNToolkit {
-	namespace VNEditor {
-		using VNUtility;
+namespace VNToolkit.VNEditor {
 
-		public class VNPanelManager {
+	public class VNPanelManager {
 
-			// Public Variables
-			public static VNIPanel CurrentPanel { get; set; }
-			public static VN_EditorState VnEditorState { get { return vnEditorState; } }
+		// Public Variables
 
-			// Private Variables
-			private static VN_EditorState vnEditorState;
-			private static VNStartEditor VnStartEditor { get; set; }
-			
-			// Static Variables
+		// Private Variables
 
-			public static void Initialize(UnityAction repaint) {
-				if (VnStartEditor == null) {
-					VnStartEditor = new VNStartEditor();
-				}
-				VnStartEditor.OnPanelEnable(repaint);
+		// Static Variables
+		public static VNIPanel CurrentPanel { get; set; }
+		public static VN_EditorState VnEditorState { get { return vnEditorState; } }
 
-				vnEditorState = VN_EditorState.START;
+		private static VN_EditorState vnEditorState;
+		private static VNStartEditor VnStartEditor { get; set; }
+
+		public static void Initialize(UnityAction repaint) {
+			if (VnStartEditor == null) {
+				VnStartEditor = new VNStartEditor();
 			}
+			VnStartEditor.OnPanelEnable(repaint);
 
-			public static void DrawPanels(Rect position) {
-				if (vnEditorState == VN_EditorState.START) {
-					VnStartEditor.OnPanelDraw(position);
+			vnEditorState = VN_EditorState.START;
+		}
 
-					if (CurrentPanel != VnStartEditor) {
-						CurrentPanel = VnStartEditor;
-					}
-				}
-				else if (vnEditorState == VN_EditorState.MAIN) {
+		public static void DrawPanels(Rect position) {
+			if (vnEditorState == VN_EditorState.START) {
+				VnStartEditor.OnPanelDraw(position);
 
+				if (CurrentPanel != VnStartEditor) {
+					CurrentPanel = VnStartEditor;
 				}
 			}
+			else if (vnEditorState == VN_EditorState.MAIN) {
 
-			public static void SetEditorState(VN_EditorState state) {
-				vnEditorState = state;
 			}
+		}
 
-			public static VNIPanel GetCurrentChild(string title) {
-				return CurrentPanel.GetChild(title);
-			}
+		public static void SetEditorState(VN_EditorState state) {
+			vnEditorState = state;
+		}
+
+		public static VNIPanel GetCurrentChild(string title) {
+			return CurrentPanel.GetChild(title);
 		}
 	}
 }

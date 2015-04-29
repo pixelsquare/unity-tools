@@ -7,25 +7,24 @@ using System.Collections;
 /// Author: Anthony Ganzon <anthony_0205@yahoo.com>
 /// </summary>
 
-namespace VNToolkit {
-	namespace VNUtility {
-		public class VNPanelInfo {
+namespace VNToolkit.VNUtility {
 
-			# region Editor Panels
-			// Panels
-			public const string PANEL_START_NAME = "Visual Novel Toolkit";
-			public const string PANEL_NEW_PROJECT_NAME = "New Project";
-			public const string PANEL_LOAD_PROJECT_NAME = "Load Project";
-			public const string PANEL_PROJECT_SETTINGS_NAME = "Settings";
+	public class VNPanelInfo {
 
-			// Plain Panels
-			public const string PANEL_RESOLUTION_NAME = "Resolution";
-			# endregion Editor Panels
+		# region Editor Panels
+		public const string PANEL_START_NAME = "Visual Novel Toolkit";
+		public const string PANEL_NEW_PROJECT_NAME = "New Project";
+		public const string PANEL_LOAD_PROJECT_NAME = "Load Project";
+		public const string PANEL_PROJECT_SETTINGS_NAME = "Settings";
+		public const string PANEL_RESOLUTION_NAME = "Resolution";
+		public const string PANEL_DIALOGUE_WRITER_NAME = "Dialogue Writer";
+		public const string PANEL_DIALOGUE_READER_NAME = "Dialogue Reader";
+		public const string PANEL_DIALOGUE_INFO_NAME = "Dialogue Info";
+		# endregion Editor Panels
 
-			# region Inspector Panels
-			public const string CAMERA_SETTING_NAME = "VN Camera Settings";
-			public const string DIALOGUE_NAME = "VN Dialogue";
-			# endregion Inspector Panels
-		}
+		# region Inspector Panels
+		public const string CAMERA_SETTING_NAME = "VN Camera Settings";
+		public const string DIALOGUE_NAME = "VN Dialogue";
+		# endregion Inspector Panels
 	}
 }

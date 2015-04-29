@@ -8,27 +8,28 @@ using UnityEditor;
 /// Author: Anthony Ganzon <anthony_0205@yahoo.com>
 /// </summary>
 
-namespace VNToolkit {
-	namespace VNUtility {
-		namespace VNCustomInspector {
-			[CustomEditor(typeof(VNPanelInspectorAbstract), true)]
-			public class VNMainInspector : Editor {
+namespace VNToolkit.VNUtility.VNCustomInspector {
 
-				// Private Variables
-				private VNPanelInspectorAbstract vnPanelInspector;
+	[CustomEditor(typeof(VNPanelMonoAbstract), true)]
+	public class VNMainInspector : Editor {
 
-				public void OnEnable() {
-					vnPanelInspector = (VNPanelInspectorAbstract)target;
-					vnPanelInspector.OnPanelEnable(Repaint);
-				}
+		// Private Variables
+		private VNPanelMonoAbstract vnPanelInspector;
+		private bool initialized;
 
-				public override void OnInspectorGUI() {
-					base.OnInspectorGUI();
-					vnPanelInspector.OnPanelDraw();
+		public override void OnInspectorGUI() {
+			base.OnInspectorGUI();
 
-					if(GUI.changed && vnPanelInspector.isActiveAndEnabled)	EditorUtility.SetDirty(target);
-				}
+			if (!initialized) {
+				vnPanelInspector = (VNPanelMonoAbstract)target;
+				vnPanelInspector.OnPanelEnable(Repaint);
+				initialized = true;
 			}
+
+			vnPanelInspector.OnPanelDraw();
+
+			if (GUI.changed && vnPanelInspector.isActiveAndEnabled) 
+				EditorUtility.SetDirty(target);
 		}
 	}
 }

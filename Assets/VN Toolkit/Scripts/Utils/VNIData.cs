@@ -1,23 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
-using System;
 
-namespace VNToolkit {
-	namespace VNEditor {
-		namespace VNUtility {
-			public interface VNIData {
+namespace VNToolkit.VNEditor.VNUtility {
 
-				// Public Variables
-				int DATA_ID { get; set; }
+	public interface VNIData {
 
-				string DATA_TITLE { get; }
+		// Public Variables
+		int DATA_ID { get; set; }
 
-				string BASE_PATH { get; }
+		string DATA_TITLE { get; }
 
-				string FILE_EXT { get; }
+		string BASE_PATH { get; }
 
-				string FILE_FORMAT { get; }
-			}
-		}
+		string FILE_EXT { get; }
+
+		string FILE_FORMAT { get; }
 	}
 }
