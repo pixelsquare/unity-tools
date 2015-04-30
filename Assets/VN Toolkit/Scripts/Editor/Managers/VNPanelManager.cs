@@ -17,36 +17,54 @@ namespace VNToolkit.VNEditor {
 		public static VN_EditorState VnEditorState { get { return vnEditorState; } }
 
 		private static VN_EditorState vnEditorState;
-		private static VNStartEditor VnStartEditor { get; set; }
+		private static VNStartupEditor VNStartup { get; set; }
+		private static VNSetupEditor VNSetup { get; set; }
+
+		private static UnityAction Repaint;
 
 		public static void Initialize(UnityAction repaint) {
-			if (VnStartEditor == null) {
-				VnStartEditor = new VNStartEditor();
+			if (VNStartup == null) {
+				VNStartup = new VNStartupEditor();
 			}
-			VnStartEditor.OnPanelEnable(repaint);
 
-			vnEditorState = VN_EditorState.START;
+			if (VNSetup == null) {
+				VNSetup = new VNSetupEditor();
+			}
+
+			Repaint = repaint;
 		}
 
 		public static void DrawPanels(Rect position) {
-			if (vnEditorState == VN_EditorState.START) {
-				VnStartEditor.OnPanelDraw(position);
-
-				if (CurrentPanel != VnStartEditor) {
-					CurrentPanel = VnStartEditor;
-				}
-			}
-			else if (vnEditorState == VN_EditorState.MAIN) {
-
+			VNPanelAbstract currentPanel = CurrentPanel as VNPanelAbstract;
+			if (currentPanel != null) {
+				currentPanel.OnPanelDraw(position);
 			}
 		}
 
 		public static void SetEditorState(VN_EditorState state) {
 			vnEditorState = state;
+
+			if (vnEditorState == VN_EditorState.STARTUP) {
+				VNStartup.OnPanelEnable(Repaint);
+				SetCurrentPanel(VNStartup);
+				VNMainEditor.VnWindow.SetWindowResolution(VNConstants.EDITOR_WINDOW_START_WIDTH, VNConstants.EDITOR_WINDOW_START_HEIGHT);
+			}
+			else if (vnEditorState == VN_EditorState.SETUP) {
+				VNSetup.OnPanelEnable(Repaint);
+				SetCurrentPanel(VNSetup);
+				VNMainEditor.VnWindow.SetWindowResolution(VNConstants.EDITOR_WINDOW_DEFAULT_WIDTH, VNConstants.EDITOR_WINDOW_DEFAULT_HEIGHT);
+			}
 		}
 
 		public static VNIPanel GetCurrentChild(string title) {
 			return CurrentPanel.GetChild(title);
+		}
+
+		private static void SetCurrentPanel(VNIPanel panel) {
+			if (CurrentPanel == panel)
+				return;
+
+			CurrentPanel = panel;
 		}
 	}
 }

@@ -6,10 +6,10 @@ using UnityEditor;
 using VNToolkit.VNUtility;
 using VNToolkit.VNEditor.VNUtility;
 
-namespace VNToolkit.VNDialogue {
+namespace VNToolkit.VNCore.VNDialogue {
 
 	public class VNDialogueReader : VNPanelAbstract {
-
+		
 		// Public Variables
 		public string[] DialogueWordList { get { return dialogueWordList; } }
 
@@ -36,10 +36,14 @@ namespace VNToolkit.VNDialogue {
 			StringBuilder dialogueSB = new StringBuilder();
 			float wordWidth = 0f;
 
+			string[] screenResolution = UnityStats.screenRes.Split('x');
+			int screenWidth = int.Parse(screenResolution[0]);
+			//int screenHeight = int.Parse(screenResolution[1]);
+
 			for (int i = 0; i < dialogueWordList.Length; i++) {
 				string word = dialogueWordList[i];
 				if (dialogueWords.ContainsKey(word)) {
-					if ((wordWidth + dialogueWords[word]) < Screen.width) {
+					if ((wordWidth + dialogueWords[word]) < screenWidth) {
 						dialogueSB.AppendFormat(DIALOGUE_FORMAT, word);
 						wordWidth += dialogueWords[word];
 					}
@@ -87,18 +91,6 @@ namespace VNToolkit.VNDialogue {
 		}
 
 		# region Panel Inspector Abstract
-		public override bool IsPanelFoldable {
-			get { return false; }
-		}
-
-		protected override bool IsPanelFlexible {
-			get { return true; }
-		}
-
-		protected override float PanelWidth {
-			get { return 0f; }
-		}
-
 		public override string PanelTitle {
 			get { return VNPanelInfo.PANEL_DIALOGUE_READER_NAME; }
 		}
@@ -107,7 +99,27 @@ namespace VNToolkit.VNDialogue {
 			get { return VNControlName.FOCUSED_PANEL_DIALOGUE_READER; }
 		}
 
-		public override System.Action<Rect> OnPanelGUI {
+		protected override bool IsPanelFoldable {
+			get { return false; }
+		}
+
+		protected override bool IsPanelFlexible {
+			get { return true; }
+		}
+
+		protected override bool IsRefreshable {
+			get { return false; }
+		}
+
+		protected override bool IsScrollable {
+			get { return false; }
+		}
+
+		protected override float PanelWidth {
+			get { return 0f; }
+		}
+
+		protected override System.Action<Rect> OnPanelGUI {
 			get { return DialogueReaderWindow; }
 		}
 

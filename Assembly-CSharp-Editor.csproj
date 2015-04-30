@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{72F7A87C-F14C-F19E-4139-B1E2A8C82D06}</ProjectGuid>
+	<ProjectGuid>{50396905-141C-7FD7-6B5E-5B668E57B5B7}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -46,15 +46,18 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Data\VNChapterData.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Data\VNProjectData.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Managers\VNDataManager.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Managers\VNFileManager.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Managers\VNPanelManager.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\VNStartEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Plain Panels\VNLoadProjectEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Plain Panels\VNNewProjectEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Plain Panels\VNProjectSettingsEditor.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Plain Panels\VNResolutionEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Setup\VNChapterEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Setup\VNSetupEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Startup\VNLoadProjectEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Startup\VNNewProjectEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Startup\VNProjectSettingsEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Startup\VNResolutionEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Startup\VNStartupEditor.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\VNMainEditor.cs" />
      <None Include="Assets\VN Toolkit\Version Number.txt" />
      <None Include="Assets\VN Toolkit\VN Toolkit Script Hierarchy.txt" />
@@ -65,7 +68,7 @@
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.4/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>C:/Users/Anthony/Projects/Unity Tools/Assets/DLL/Json/JsonFx.Json.dll</HintPath>
+ <HintPath>C:/Users/Anthony/Projects/Unity-Tools/Assets/DLL/Json/JsonFx.Json.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
@@ -73,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{A7DEBCCB-E5EC-FD11-93A8-3A28B65DE4B1}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{3A670C67-050D-E667-301C-D9BC024FA6E5}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

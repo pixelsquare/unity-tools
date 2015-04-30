@@ -4,11 +4,13 @@ using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using VNToolkit.VNUtility;
+using VNToolkit.VNUtility.VNIcon;
 using System.Collections.Generic;
 using VNToolkit.VNEditor.VNUtility;
 using VNToolkit.VNUtility.VNCustomInspector;
 
-namespace VNToolkit.VNDialogue {
+
+namespace VNToolkit.VNCore.VNDialogue {
 
 	[ExecuteInEditMode]
 	public class VNDialogueManager : VNPanelMonoAbstract {
@@ -44,39 +46,15 @@ namespace VNToolkit.VNDialogue {
 		// Static Variables 
 
 		private void OnEnable() {
-			textGenSettings = new TextGenerationSettings();
-			textGenSettings.font = dialogueFont;
-			textGenSettings.fontSize = dialogueTextUI.fontSize;
-
-			dialogueReader = new VNDialogueReader();
-			dialogueList = new List<string>();
-			dialogueList.AddRange(dialogueReader.GetDialogues(dialogueText, textGenSettings));
-			AddChildren(dialogueReader);
-
-			dialogueIndx = 0;
-			dialogueInputText = dialogueList[dialogueIndx];
-
-			dialogueWriter = new VNDialogueWriter();
-			dialogueWriter.InitializeWriter(dialogueInputText, 0.03f);
-			dialogueWriter.onWriterEnd = OnWriterEnd;
-			AddChildren(dialogueWriter);
-
-			dialogueInfo = new VNDialogueInfo();
-			dialogueInfo.DialogueWidth = dialogueTextUI.rectTransform.rect.width;
-			dialogueInfo.DialogueHeight = dialogueTextUI.rectTransform.rect.height;
-			dialogueInfo.DialogueCount = dialogueList.Count;
-			dialogueInfo.DialogueIndx = dialogueIndx;
-			AddChildren(dialogueInfo);
-
-			dialogueTextUI.text = string.Empty;
-
-			dialoguePlayIcon = AssetDatabase.LoadAssetAtPath("Assets/VN Toolkit/Icons/play80.png", typeof(Texture2D)) as Texture2D;
-			dialoguePauseIcon = AssetDatabase.LoadAssetAtPath("Assets/VN Toolkit/Icons/pause36.png", typeof(Texture2D)) as Texture2D;
-			dialogueStopIcon = AssetDatabase.LoadAssetAtPath("Assets/VN Toolkit/Icons/square151.png", typeof(Texture2D)) as Texture2D;
+			dialoguePlayIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_PLAY);
+			dialoguePauseIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_PAUSE);
+			dialogueStopIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_STOP);
 		}
 
 		private void Update() {
-			dialogueTextUI.text = dialogueOutputText;
+			if (dialogueTextUI != null) {
+				dialogueTextUI.text = dialogueOutputText;
+			}
 		}
 
 		private void OnWriterEnd() {
@@ -103,6 +81,14 @@ namespace VNToolkit.VNDialogue {
 		}
 
 		# region Panel Inspector Abstract
+		public override string PanelTitle {
+			get { return VNPanelInfo.DIALOGUE_NAME; }
+		}
+
+		public override string PanelControlName {
+			get { return null; }
+		}
+
 		protected override bool IsPanelFoldable {
 			get { return true; }
 		}
@@ -111,16 +97,12 @@ namespace VNToolkit.VNDialogue {
 			get { return true; }
 		}
 
+		protected override bool IsRefreshable {
+			get { return true; }
+		}
+
 		protected override float PanelWidth {
 			get { return 0f; }
-		}
-
-		public override string PanelTitle {
-			get { return VNPanelInfo.DIALOGUE_NAME; }
-		}
-
-		public override string PanelControlName {
-			get { return null; }
 		}
 
 		protected override System.Action OnPanelGUI {
@@ -134,52 +116,91 @@ namespace VNToolkit.VNDialogue {
 		public override void OnPanelEnable(UnityAction repaint) {
 			base.OnPanelEnable(repaint);
 
+			if (dialogueText == string.Empty)
+				return;
+
+			if (dialogueTextUI == null)
+				return;
+
+			if (dialogueFont == null)
+				return;
+
+			textGenSettings = new TextGenerationSettings();
+			textGenSettings.font = dialogueFont;
+			textGenSettings.fontSize = dialogueTextUI.fontSize;
+
+			dialogueReader = new VNDialogueReader();
+			dialogueList = new List<string>();
+			dialogueList.AddRange(dialogueReader.GetDialogues(dialogueText, textGenSettings));
+			dialogueReader.OnPanelEnable(Repaint);
+			AddChildren(dialogueReader);
+
+			dialogueIndx = 0;
+			dialogueInputText = dialogueList[dialogueIndx];
+
+			dialogueWriter = new VNDialogueWriter();
+			dialogueWriter.InitializeWriter(dialogueInputText, 0.03f);
+			dialogueWriter.onWriterEnd = OnWriterEnd;
+			dialogueWriter.OnPanelEnable(Repaint);
+			AddChildren(dialogueWriter);
+
+			dialogueInfo = new VNDialogueInfo();
+			dialogueInfo.DialogueWidth = dialogueTextUI.rectTransform.rect.width;
+			dialogueInfo.DialogueHeight = dialogueTextUI.rectTransform.rect.height;
+			dialogueInfo.DialogueCount = dialogueList.Count;
+			dialogueInfo.DialogueIndx = dialogueIndx;
+			dialogueInfo.OnPanelEnable(Repaint);
+			AddChildren(dialogueInfo);
+
+			dialogueTextUI.text = string.Empty;
+		}
+
+		protected override void PanelRefresh() {
+			if (dialogueText == string.Empty)
+				return;
+
+			if (dialogueTextUI == null)
+				return;
+
+			if (dialogueFont == null)
+				return;
+
 			textGenSettings.font = dialogueFont;
 			textGenSettings.fontSize = dialogueTextUI.fontSize;
 
 			dialogueList = new List<string>();
 			dialogueList.AddRange(dialogueReader.GetDialogues(dialogueText, textGenSettings));
-			dialogueReader.OnPanelEnable(repaint);
 
 			dialogueIndx = 0;
 			dialogueInputText = dialogueList[dialogueIndx];
 
 			dialogueWriter.InitializeWriter(dialogueInputText, 0.03f);
-			dialogueWriter.onWriterEnd = OnWriterEnd;
-			dialogueWriter.OnPanelEnable(repaint);
 
 			dialogueInfo.DialogueWidth = dialogueTextUI.rectTransform.rect.width;
 			dialogueInfo.DialogueHeight = dialogueTextUI.rectTransform.rect.height;
 			dialogueInfo.DialogueCount = dialogueList.Count;
 			dialogueInfo.DialogueIndx = dialogueIndx;
-			dialogueInfo.OnPanelEnable(repaint);
 
 			dialogueTextUI.text = string.Empty;
+
+			base.PanelRefresh();
 		}
 
 		public void DialogueInspectorDraw() {
+			if (dialogueReader == null || dialogueWriter == null || dialogueInfo == null)
+				return;
+
 			EditorGUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 
 			dialogueIcon = (dialogueWriter.WriterIsPlaying) ? dialoguePauseIcon : dialoguePlayIcon;
-			if (GUILayout.Button(dialogueIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
+			if (GUILayout.Button(dialogueIcon, EditorStyles.miniButton, GUILayout.Width(22f), GUILayout.Height(22f))) {
 				if (!dialogueWriter.WriterIsPlaying) { dialogueWriter.StartWriting(); }
 				else { dialogueWriter.PauseWriting(); }
 			}
 
-			if (GUILayout.Button(dialogueStopIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
+			if (GUILayout.Button(dialogueStopIcon, EditorStyles.miniButton, GUILayout.Width(22f), GUILayout.Height(22f))) {
 				dialogueTextUI.text = string.Empty;
-
-				dialogueIndx = 0;
-				dialogueInputText = dialogueList[dialogueIndx];
-
-				dialogueWriter.InitializeWriter(dialogueInputText, 0.03f);
-
-				dialogueInfo.DialogueWidth = dialogueTextUI.rectTransform.rect.width;
-				dialogueInfo.DialogueHeight = dialogueTextUI.rectTransform.rect.height;
-				dialogueInfo.DialogueCount = dialogueList.Count;
-				dialogueInfo.DialogueIndx = dialogueIndx;
-
 				dialogueWriter.StopWrinting();
 			}
 

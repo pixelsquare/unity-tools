@@ -29,6 +29,14 @@ namespace VNToolkit.VNUtility {
 		// Static Variables
 
 		# region Panel Inspector Abstract
+		public override string PanelTitle {
+			get { return VNPanelInfo.CAMERA_SETTING_NAME; }
+		}
+
+		public override string PanelControlName {
+			get { return string.Empty; }
+		}
+
 		protected override bool IsPanelFoldable {
 			get { return true; }
 		}
@@ -37,16 +45,12 @@ namespace VNToolkit.VNUtility {
 			get { return true; }
 		}
 
+		protected override bool IsRefreshable {
+			get { return true; }
+		}
+
 		protected override float PanelWidth {
 			get { return 0f; }
-		}
-
-		public override string PanelTitle {
-			get { return VNPanelInfo.CAMERA_SETTING_NAME; }
-		}
-
-		public override string PanelControlName {
-			get { return string.Empty; }
 		}
 
 		protected override System.Action OnPanelGUI {

@@ -33,7 +33,7 @@ namespace VNToolkit.VNEditor {
 		}
 
 		public override string FILE_EXT {
-			get { return VNConstants.DATA_FILE_EXT; }
+			get { return VNFileManager.DATA_FILE_EXT; }
 		}
 
 		public override string FILE_FORMAT {

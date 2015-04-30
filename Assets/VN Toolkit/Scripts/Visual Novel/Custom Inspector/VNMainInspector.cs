@@ -15,17 +15,14 @@ namespace VNToolkit.VNUtility.VNCustomInspector {
 
 		// Private Variables
 		private VNPanelMonoAbstract vnPanelInspector;
-		private bool initialized;
+
+		public void OnEnable() {
+			vnPanelInspector = (VNPanelMonoAbstract)target;
+			vnPanelInspector.OnPanelEnable(Repaint);
+		}
 
 		public override void OnInspectorGUI() {
 			base.OnInspectorGUI();
-
-			if (!initialized) {
-				vnPanelInspector = (VNPanelMonoAbstract)target;
-				vnPanelInspector.OnPanelEnable(Repaint);
-				initialized = true;
-			}
-
 			vnPanelInspector.OnPanelDraw();
 
 			if (GUI.changed && vnPanelInspector.isActiveAndEnabled) 

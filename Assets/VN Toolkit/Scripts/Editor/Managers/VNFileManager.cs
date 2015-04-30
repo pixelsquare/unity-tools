@@ -17,7 +17,7 @@ namespace VNToolkit.VNEditor.VNUtility {
 		public static string CHAPTER_PATH = string.Empty;
 		public static string SCENE_PATH = string.Empty;
 
-		public static string FILE_EXT = ".json";
+		public const string DATA_FILE_EXT = ".json";
 
 		public static void CreateProjectPath(string basePath) {
 			BASE_PATH = basePath;

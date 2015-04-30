@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{A7DEBCCB-E5EC-FD11-93A8-3A28B65DE4B1}</ProjectGuid>
+	<ProjectGuid>{3A670C67-050D-E667-301C-D9BC024FA6E5}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -50,8 +50,19 @@
      <Compile Include="Assets\Utilities\ObjectListener.cs" />
      <Compile Include="Assets\Utilities\ObjectQueue.cs" />
      <Compile Include="Assets\Utilities\Parameters.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNIData.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNIPanel.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\Abstract\VNDataAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\Abstract\VNPanelAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\Abstract\VNPanelMonoAbstract.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\Icon\VNIconDatabase.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\Icon\VNIconName.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\Interface\VNIData.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\Interface\VNIPanel.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNConstants.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNControlName.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNDataName.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNDebugger.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNEditorUtility.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNPanelInfo.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Custom Inspector\VNMainInspector.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueInfo.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueManager.cs" />
@@ -59,22 +70,13 @@
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueWriter.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\VNCamera.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\VNProjectSettings.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNConstants.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNControlName.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNDataAbstract.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNDataName.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNDebugger.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNEditorUtility.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNPanelAbstract.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNPanelInfo.cs" />
-     <Compile Include="Assets\VN Toolkit\Utils\VNPanelMonoAbstract.cs" />
      <None Include="Assets\VN Toolkit\Version Number.txt" />
      <None Include="Assets\VN Toolkit\VN Toolkit Script Hierarchy.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.4/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>C:/Users/Anthony/Projects/Unity Tools/Assets/DLL/Json/JsonFx.Json.dll</HintPath>
+ <HintPath>C:/Users/Anthony/Projects/Unity-Tools/Assets/DLL/Json/JsonFx.Json.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
