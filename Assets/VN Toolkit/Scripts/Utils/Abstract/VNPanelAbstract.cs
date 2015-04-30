@@ -118,10 +118,15 @@ namespace VNToolkit.VNEditor.VNUtility {
 			}
 
 			if (IsRefreshable && panelEnabled) {
+				Color originalColor = GUI.color;
+				GUI.color = Color.green;
+
 				GUILayout.FlexibleSpace();
 				if (GUILayout.Button(panelRefreshIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
 					PanelRefresh();
 				}
+
+				GUI.color = originalColor;
 			}
 			EditorGUILayout.EndHorizontal();
 

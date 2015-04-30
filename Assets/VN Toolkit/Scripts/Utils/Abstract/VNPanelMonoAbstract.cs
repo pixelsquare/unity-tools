@@ -104,10 +104,15 @@ namespace VNToolkit.VNUtility.VNCustomInspector {
 			}
 
 			if (IsRefreshable && panelEnabled) {
+				Color originalColor = GUI.color;
+				GUI.color = Color.green;
+
 				GUILayout.FlexibleSpace();
 				if (GUILayout.Button(panelRefreshIcon, EditorStyles.miniButton, GUILayout.Width(22f), GUILayout.Height(22f))) {
 					PanelRefresh();
 				}
+
+				GUI.color = originalColor;
 			}
 			EditorGUILayout.EndHorizontal();
 
