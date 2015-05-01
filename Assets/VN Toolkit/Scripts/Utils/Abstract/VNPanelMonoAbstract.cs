@@ -56,8 +56,10 @@ namespace VNToolkit.VNUtility.VNCustomInspector {
 			panelAnim = new AnimBool(panelEnabled);
 			panelAnim.valueChanged.AddListener(Repaint);
 
-			parent = null;
-			children = new List<VNIPanel>();
+			if (children == null) {
+				children = new List<VNIPanel>();
+			}
+
 			panelActive = true;
 
 			panelRefreshIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_REFRESH_1);
@@ -142,6 +144,7 @@ namespace VNToolkit.VNUtility.VNCustomInspector {
 			else if (panelState == VN_PANELSTATE.LOAD) { PanelLoad(); }
 			else if (panelState == VN_PANELSTATE.CLEAR) { PanelClear(); }
 			else if (panelState == VN_PANELSTATE.RESET) { PanelReset(); }
+			else if (panelState == VN_PANELSTATE.REFRESH) { PanelRefresh(); }
 		}
 
 		public void AddChildren(VNIPanel child) {

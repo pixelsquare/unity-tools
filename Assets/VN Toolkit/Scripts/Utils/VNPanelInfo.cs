@@ -13,7 +13,7 @@ namespace VNToolkit.VNUtility {
 
 		# region Editor Panels
 		public const string PANEL_STARTUP_NAME = "Visual Novel Toolkit";
-		public const string PANEL_SETUP_NAME = "Visial Novel Toolkit";
+		public const string PANEL_SETUP_NAME = "Visual Novel Toolkit";
 
 		public const string PANEL_NEW_PROJECT_NAME = "New Project";
 		public const string PANEL_LOAD_PROJECT_NAME = "Load Project";
@@ -25,6 +25,8 @@ namespace VNToolkit.VNUtility {
 		public const string PANEL_DIALOGUE_INFO_NAME = "Dialogue Info";
 
 		public const string PANEL_CHAPTER_NAME = "Chapter";
+		public const string PANEL_CHAPTER_LIST_NAME = "Chapter List";
+		public const string PANEL_CHAPTER_INFO_NAME = "Chapter Information";
 
 		# endregion Editor Panels
 

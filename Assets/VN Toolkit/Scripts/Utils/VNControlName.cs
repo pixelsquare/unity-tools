@@ -19,5 +19,7 @@ namespace VNToolkit.VNEditor.VNUtility {
 		public const string FOCUSED_PANEL_DIALOGUE_INFO = "FOCUSED_PANEL_DIALOGUE_INFO";
 
 		public const string FOCUSED_PANEL_CHAPTER = "FOCUSED_PANEL_CHAPTER";
+		public const string FOCUSED_PANEL_CHAPTER_LIST = "FOCUSED_PANEL_CHAPTER_LIST";
+		public const string FOCUSED_PANEL_CHAPTER_INFO = "FOCUSED_PANEL_CHAPTER_INFO";
 	}
 }

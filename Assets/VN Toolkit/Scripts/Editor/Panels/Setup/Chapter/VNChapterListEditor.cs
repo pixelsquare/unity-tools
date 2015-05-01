@@ -6,12 +6,21 @@ using UnityEngine.Events;
 using VNToolkit.VNUtility.VNIcon;
 using UnityEditor;
 using System.Collections.Generic;
+using System.Text;
 
 namespace VNToolkit.VNEditor {
 
-	public class VNChapterEditor : VNPanelAbstract {
+	public class VNChapterListEditor : VNPanelAbstract {
 
 		// Public Variables
+		public VNChapterData CurrentElementData {
+			get {
+				if (dataNodeIndx < 0 || dataElementIndx < 0)
+					return null;
+
+				return dataNodeList[dataNodeIndx].dataElements[dataElementIndx].elementData;
+			}
+		}
 
 		// Private Variables
 		private Texture2D chapterAddIcon;
@@ -19,10 +28,11 @@ namespace VNToolkit.VNEditor {
 
 		public class ChapterDataElements {
 			public bool elementEnabled { get; set; }
-			public List<bool> element { get; set; }
+			public VNChapterData elementData { get; set; }
 		}
 
 		public class ChapterDataNode {
+			public int selectedNodeIndx { get; set; }
 			public bool nodeEnabled { get; set; }
 			public ChapterDataElements[] dataElements { get; set; }
 		}
@@ -30,29 +40,33 @@ namespace VNToolkit.VNEditor {
 		private ChapterDataNode[] dataNodeList;
 		private int dataNodeIndx;
 		private int dataElementIndx;
+		private int chapterElementCount;
 
-		GUIStyle nodeStyle;
+		private GUIStyle nodeStyle;
+		private VNChapterInfoEditor chapterInfo;
 
 		private const int CHAPTER_ELEMENT_MAX = 10;
 		private const string CHAPTER_NAME_FORMAT = "Chapter {0}";
+		private const string CHAPTER_TOTAL_FORMAT = "Total Chapters: {0}";
+		private const string CHAPTER_REMOVE_DATA_FORMAT = "Are you sure you want to permanently remove Chapter {0}?";
 
 		// Static Variables
 
 		# region Panel Editor Abstract
 		public override string PanelTitle {
-			get { return VNPanelInfo.PANEL_CHAPTER_NAME; }
+			get { return VNPanelInfo.PANEL_CHAPTER_LIST_NAME; }
 		}
 
 		public override string PanelControlName {
-			get { return VNControlName.FOCUSED_PANEL_CHAPTER; }
+			get { return VNControlName.FOCUSED_PANEL_CHAPTER_LIST; }
 		}
 
 		protected override bool IsPanelFoldable {
-			get { return true; }
+			get { return false; }
 		}
 
 		protected override bool IsPanelFlexible {
-			get { return true; }
+			get { return false; }
 		}
 
 		protected override bool IsRefreshable {
@@ -64,7 +78,7 @@ namespace VNToolkit.VNEditor {
 		}
 
 		protected override float PanelWidth {
-			get { return 0f; }
+			get { return 350f; }
 		}
 
 		protected override System.Action<Rect> OnPanelGUI {
@@ -74,39 +88,61 @@ namespace VNToolkit.VNEditor {
 		public override void OnPanelEnable(UnityAction repaint) {
 			base.OnPanelEnable(repaint);
 
+			chapterElementCount = 0;
+
 			dataNodeIndx = -1;
 			dataElementIndx = -1;
 			AddChapterNode();
 
 			nodeStyle = new GUIStyle(EditorStyles.miniButton);
-			nodeStyle.onNormal.background = null;
+			nodeStyle.onNormal.background = null;			
 
 			chapterAddIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_ADD);
 			chapterMinusIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_MINUS);
 		}
 
 		private void ChapterWindow(Rect position) {
-			EditorGUILayout.LabelField("Node: " + dataNodeIndx, EditorStyles.label);
-			EditorGUILayout.LabelField("Element: " + dataElementIndx, EditorStyles.label);
+			//EditorGUILayout.LabelField("Node: " + dataNodeIndx, EditorStyles.label);
+			//EditorGUILayout.LabelField("Element: " + dataElementIndx, EditorStyles.label);
 
-			EditorGUILayout.BeginHorizontal(VNConstants.DEFAULT_STYLE_BOX);
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField(string.Format(CHAPTER_TOTAL_FORMAT, chapterElementCount), EditorStyles.label);
+			EditorGUILayout.EndHorizontal();
 
+			EditorGUILayout.BeginVertical(VNConstants.DEFAULT_STYLE_BOX);
+
+			EditorGUILayout.BeginHorizontal();
+
+			DrawChapterElements();
+
+			GUILayout.FlexibleSpace();
 			EditorGUILayout.BeginHorizontal(VNConstants.DEFAULT_STYLE_BOX);
 			if (GUILayout.Button(chapterAddIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
 				AddChapterElement();
+				VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
 			}
 
 			if (GUILayout.Button(chapterMinusIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
-
+				if(EditorUtility.DisplayDialog(
+					"Removing Chapter Element",
+					string.Format(CHAPTER_REMOVE_DATA_FORMAT, (dataElementIndx + 1)),
+					"Continue",
+					"Cancel")) 
+				{
+					RemoveChapterElement(dataElementIndx);
+					dataElementIndx = -1;
+					VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+				}
+				
 			}
+
+			EditorGUILayout.EndHorizontal();
 
 			EditorGUILayout.EndHorizontal();
 
 			DrawChapterNode();
 
-			EditorGUILayout.EndHorizontal();
-
-			DrawChapterElements();
+			EditorGUILayout.EndVertical();
 		}
 
 		# endregion Panel Editor Abstract
@@ -117,10 +153,13 @@ namespace VNToolkit.VNEditor {
 				dataNodeList = new ChapterDataNode[0];
 			}
 
+			ChapterDataNode dataNode = new ChapterDataNode();
+			dataNode.dataElements = new ChapterDataElements[0];
+
 			ArrayUtility.Add<ChapterDataNode>(ref dataNodeList, new ChapterDataNode());
 			SetChapterNodeIndex(dataNodeList.Length - 1);
 
-			// Add first element;
+			// Add first element
 			AddChapterElement();
 		}
 
@@ -128,11 +167,14 @@ namespace VNToolkit.VNEditor {
 			if (dataNodeList == null)
 				return;
 
-			EditorGUILayout.BeginHorizontal(VNConstants.DEFAULT_STYLE_BOX);
+			//if (dataNodeList.Length < 2)
+			//    return;
+
+			EditorGUILayout.BeginHorizontal(VNConstants.DEFAULT_STYLE_BOX, GUILayout.Width(295f));
 
 			for (int i = 0; i < dataNodeList.Length; i++) {
 				bool toggle = dataNodeList[i].nodeEnabled;
-				string name = (i + 1).ToString();
+				string name = string.Empty;
 
 				Color originalColor = GUI.color;
 				GUI.color = (toggle) ? Color.yellow : Color.white;
@@ -141,8 +183,8 @@ namespace VNToolkit.VNEditor {
 					toggle,
 					name,
 					nodeStyle,
-					GUILayout.Width(20f),
-					GUILayout.Height(20f)
+					GUILayout.Width(15f),
+					GUILayout.Height(15f)
 				);
 
 				GUI.color = originalColor;
@@ -151,9 +193,11 @@ namespace VNToolkit.VNEditor {
 				if (dataNodeList[i].nodeEnabled != toggle) {
 					if (toggle) {
 						SetChapterNodeIndex(i);
+						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 					else {
 						dataNodeIndx = -1;
+						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 				}
 
@@ -174,6 +218,7 @@ namespace VNToolkit.VNEditor {
 				if (i == indx) {
 					dataNodeList[i].nodeEnabled = true;
 					dataNodeIndx = indx;
+					dataElementIndx = dataNodeList[dataNodeIndx].selectedNodeIndx;
 					continue;
 				}
 
@@ -217,9 +262,32 @@ namespace VNToolkit.VNEditor {
 				return;
 			}
 
-			ArrayUtility.Add<ChapterDataElements>(ref elements, new ChapterDataElements());
+			chapterElementCount++;
+
+			VNChapterData newData = new VNChapterData();
+			newData.chapterName = string.Format(CHAPTER_NAME_FORMAT, chapterElementCount);
+			newData.DATA_ID = chapterElementCount;
+
+			ArrayUtility.Add<ChapterDataElements>(ref elements, new ChapterDataElements() { elementData = newData });
 			dataNodeList[dataNodeIndx].dataElements = elements;
 			SetChapterElementIndex(elements.Length - 1);
+
+			UpdateChapterData();
+		}
+
+		private void RemoveChapterElement(int indx) {
+			if (dataNodeList == null || dataNodeList[dataNodeIndx].dataElements == null)
+				return;
+
+			// element to remove
+			ChapterDataElements element = dataNodeList[dataNodeIndx].dataElements[indx];
+
+			chapterElementCount--;
+			ChapterDataElements[] elements = dataNodeList[dataNodeIndx].dataElements;
+			ArrayUtility.Remove<ChapterDataElements>(ref elements, element);
+			dataNodeList[dataNodeIndx].dataElements = elements;
+
+			UpdateChapterData();
 		}
 
 		private void DrawChapterElements() {
@@ -229,32 +297,35 @@ namespace VNToolkit.VNEditor {
 			if (dataNodeList == null || dataNodeList[dataNodeIndx].dataElements == null)
 				return;
 
-			EditorGUILayout.BeginHorizontal(VNConstants.DEFAULT_STYLE_BOX);
+			EditorGUILayout.BeginHorizontal(VNConstants.DEFAULT_STYLE_BOX, GUILayout.Width(295f));
 			ChapterDataElements[] elements = dataNodeList[dataNodeIndx].dataElements;
 			for (int i = 0; i < elements.Length; i++) {
 				bool toggle = elements[i].elementEnabled;
-				string name = (i + 1).ToString();
+				//string name = (i + 1).ToString();
+				string name = elements[i].elementData.DATA_ID.ToString();
 
-				Color originalColor = GUI.color;
-				GUI.color = (toggle) ? Color.yellow : Color.white;
+				//Color originalColor = GUI.color;
+				//GUI.color = (toggle) ? Color.yellow : Color.white;
 
 				toggle = GUILayout.Toggle(
 					toggle,
 					name,
-					nodeStyle,
+					EditorStyles.miniButton,
 					GUILayout.Width(25f),
 					GUILayout.Height(25f)
 				);
 
-				GUI.color = originalColor;
+				//GUI.color = originalColor;
 
 				// On value changed
 				if (elements[i].elementEnabled != toggle) {
 					if (toggle) {
 						SetChapterElementIndex(i);
+						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 					else {
 						dataElementIndx = -1;
+						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 				}
 
@@ -279,6 +350,8 @@ namespace VNToolkit.VNEditor {
 				if (i == indx) {
 					elements[i].elementEnabled = true;
 					dataElementIndx = indx;
+					dataNodeList[dataNodeIndx].selectedNodeIndx = dataElementIndx;
+					//VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
 					continue;
 				}
 
@@ -286,6 +359,15 @@ namespace VNToolkit.VNEditor {
 			}
 
 			dataNodeList[dataNodeIndx].dataElements = elements;
+		}
+
+		private void UpdateChapterData() {
+			int counter = (dataNodeIndx * 10) + 1;
+			for (int i = 0; i < dataNodeList[dataNodeIndx].dataElements.Length; i++) {
+				dataNodeList[dataNodeIndx].dataElements[i].elementData.DATA_ID = counter;
+				dataNodeList[dataNodeIndx].dataElements[i].elementData.chapterName = string.Format(CHAPTER_NAME_FORMAT, counter);
+				counter++;
+			}
 		}
 	}
 }

@@ -55,6 +55,7 @@ namespace VNToolkit.VNEditor {
 				vnChapterEditor = new VNChapterEditor();
 			}
 			vnChapterEditor.OnPanelEnable(repaint);
+			AddChildren(vnChapterEditor);
 		}
 
 		protected override void PanelOpen() {

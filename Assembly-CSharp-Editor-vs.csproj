@@ -51,7 +51,9 @@
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Managers\VNDataManager.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Managers\VNFileManager.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Managers\VNPanelManager.cs" />
-     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Setup\VNChapterEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Setup\Chapter\VNChapterEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Setup\Chapter\VNChapterInfoEditor.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Setup\Chapter\VNChapterListEditor.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Setup\VNSetupEditor.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Startup\VNLoadProjectEditor.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Editor\Panels\Startup\VNNewProjectEditor.cs" />

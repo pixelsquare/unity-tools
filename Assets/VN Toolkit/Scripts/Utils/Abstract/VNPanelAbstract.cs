@@ -26,6 +26,7 @@ namespace VNToolkit.VNEditor.VNUtility {
 		private VN_PANELSTATE panelState;
 		private Vector2 panelVerticalScroll;
 
+		protected Event e;
 		protected AnimBool panelAnim;
 		protected UnityAction Repaint { get; set; }
 
@@ -61,8 +62,10 @@ namespace VNToolkit.VNEditor.VNUtility {
 			panelAnim = new AnimBool(panelEnabled);
 			panelAnim.valueChanged.AddListener(Repaint);
 
-			parent = null;
-			children = new List<VNIPanel>();
+			if (children == null) {
+				children = new List<VNIPanel>();
+			}
+
 			panelActive = true;
 
 			panelRefreshIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_REFRESH_1);
@@ -94,6 +97,11 @@ namespace VNToolkit.VNEditor.VNUtility {
 		public void OnPanelDraw(Rect position) {
 			if (!PanelActive || OnPanelGUI == null)
 				return;
+
+			e = Event.current;
+			if ((e.button == 0 && e.type == EventType.mouseDown) || e.keyCode == KeyCode.Return) {
+				GUI.FocusControl(PanelControlName);
+			}
 
 			if (IsScrollable && ShowScrollView()) {
 				panelVerticalScroll = EditorGUILayout.BeginScrollView(
@@ -155,6 +163,7 @@ namespace VNToolkit.VNEditor.VNUtility {
 			else if (panelState == VN_PANELSTATE.LOAD) { PanelLoad(); }
 			else if (panelState == VN_PANELSTATE.CLEAR) { PanelClear(); }
 			else if (panelState == VN_PANELSTATE.RESET) { PanelReset(); }
+			else if (panelState == VN_PANELSTATE.REFRESH) { PanelRefresh(); }
 		}
 
 		public void AddChildren(VNIPanel child) {
