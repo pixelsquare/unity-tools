@@ -38,6 +38,8 @@ namespace VNToolkit.VNEditor {
 
 		public override VNChapterData Clone() {
 			VNChapterData clone = base.Clone();
+			clone.chapterName = this.chapterName;
+			clone.chapterDesc = this.chapterDesc;
 			return clone;
 		}
 	}

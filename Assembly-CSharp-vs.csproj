@@ -63,6 +63,7 @@
      <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNDebugger.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNEditorUtility.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Utils\VNPanelInfo.cs" />
+     <Compile Include="Assets\VN Toolkit\Scripts\VNFileManager.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Custom Inspector\VNMainInspector.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueInfo.cs" />
      <Compile Include="Assets\VN Toolkit\Scripts\Visual Novel\Dialogue\VNDialogueManager.cs" />

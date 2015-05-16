@@ -129,7 +129,7 @@ namespace VNToolkit.VNCore.VNDialogue {
 			textGenSettings.font = dialogueFont;
 			textGenSettings.fontSize = dialogueTextUI.fontSize;
 
-			dialogueReader = new VNDialogueReader();
+			dialogueReader = ScriptableObject.CreateInstance<VNDialogueReader>();
 			dialogueList = new List<string>();
 			dialogueList.AddRange(dialogueReader.GetDialogues(dialogueText, textGenSettings));
 			dialogueReader.OnPanelEnable(Repaint);
@@ -138,13 +138,13 @@ namespace VNToolkit.VNCore.VNDialogue {
 			dialogueIndx = 0;
 			dialogueInputText = dialogueList[dialogueIndx];
 
-			dialogueWriter = new VNDialogueWriter();
+			dialogueWriter = ScriptableObject.CreateInstance<VNDialogueWriter>();
 			dialogueWriter.InitializeWriter(dialogueInputText, 0.03f);
 			dialogueWriter.onWriterEnd = OnWriterEnd;
 			dialogueWriter.OnPanelEnable(Repaint);
 			AddChildren(dialogueWriter);
 
-			dialogueInfo = new VNDialogueInfo();
+			dialogueInfo = ScriptableObject.CreateInstance<VNDialogueInfo>();
 			dialogueInfo.DialogueWidth = dialogueTextUI.rectTransform.rect.width;
 			dialogueInfo.DialogueHeight = dialogueTextUI.rectTransform.rect.height;
 			dialogueInfo.DialogueCount = dialogueList.Count;

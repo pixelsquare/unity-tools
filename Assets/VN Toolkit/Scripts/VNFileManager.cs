@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace VNToolkit.VNEditor.VNUtility {
 
@@ -62,13 +63,13 @@ namespace VNToolkit.VNEditor.VNUtility {
 				STREAM_PATH = string.Empty;
 			}
 
-			CHAPTER_PATH = STREAM_PATH + "/Chapter Data/";
+			CHAPTER_PATH = STREAM_PATH + "Chapter Data/";
 			if (!Directory.Exists(CHAPTER_PATH)) {
 				Debug.LogWarning(CHAPTER_PATH + " doesn't exist!");
 				CHAPTER_PATH = string.Empty;
 			}
 
-			SCENE_PATH = STREAM_PATH + "/Scene Data/";
+			SCENE_PATH = STREAM_PATH + "Scene Data/";
 			if (!Directory.Exists(SCENE_PATH)) {
 				Debug.LogWarning(SCENE_PATH + " doesn't exist!");
 				SCENE_PATH = string.Empty;
@@ -77,6 +78,22 @@ namespace VNToolkit.VNEditor.VNUtility {
 
 		public static bool IsPathValid() {
 			return (Directory.Exists(BASE_PATH) && Directory.Exists(STREAM_PATH));
+		}
+
+		public static string[] LoadDataFromPath(string path) {
+			if (!IsPathValid())
+				return null;
+
+			List<string> resultFileNames = new List<string>();
+			string[] fileWords = new string[0];
+
+			string[] files = Directory.GetFiles(path, "*" + DATA_FILE_EXT, SearchOption.AllDirectories);
+			for (int i = 0; i < files.Length; i++) {
+				fileWords = files[i].Split('/');
+				resultFileNames.Add(fileWords[fileWords.Length - 1]);
+			}
+
+			return resultFileNames.ToArray();
 		}
 	}
 }

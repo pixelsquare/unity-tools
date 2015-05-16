@@ -7,14 +7,14 @@ using VNToolkit.VNUtility.VNIcon;
 using UnityEditor.AnimatedValues;
 using System.Collections.Generic;
 
-
 namespace VNToolkit.VNEditor.VNUtility {
 
-	public abstract class VNPanelAbstract : VNIPanel {
+	[System.Serializable]
+	public abstract class VNPanelAbstract : ScriptableObject, VNIPanel {
 
 		// Public Variables
-		public VNIPanel parent { get; set; }
-		public List<VNIPanel> children { get; set; }
+		[SerializeField] public VNIPanel parent { get; set; }
+		[SerializeField] public List<VNIPanel> children { get; set; }
 
 		public bool PanelActive { get { return panelActive; } }
 		public bool PanelEnabled { get { return panelEnabled; } }
@@ -33,6 +33,14 @@ namespace VNToolkit.VNEditor.VNUtility {
 		private Texture2D panelRefreshIcon;
 
 		// Static Variables
+		public virtual void OnEnable() {
+			hideFlags = HideFlags.HideAndDontSave;
+
+			if (children == null)
+				children = new List<VNIPanel>();
+		}
+
+		public virtual void OnDisable() { }
 
 		public abstract string PanelTitle { get; }
 
@@ -55,19 +63,15 @@ namespace VNToolkit.VNEditor.VNUtility {
 			Repaint = repaint;
 			panelEnabled = false;
 
-			if (!IsPanelFoldable) {
+			if (!IsPanelFoldable)
 				panelEnabled = true;
-			}
 
-			panelAnim = new AnimBool(panelEnabled);
+			if (panelAnim == null)
+				panelAnim = new AnimBool(panelEnabled);
+
 			panelAnim.valueChanged.AddListener(Repaint);
 
-			if (children == null) {
-				children = new List<VNIPanel>();
-			}
-
 			panelActive = true;
-
 			panelRefreshIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_REFRESH_1);
 		}
 
@@ -81,9 +85,23 @@ namespace VNToolkit.VNEditor.VNUtility {
 			panelEnabled = false;
 		}
 
-		protected virtual void PanelSave() { Debug.Log("[PANEL] " + PanelTitle + " Save!"); }
+		protected virtual void PanelSave() {
+			if (!VNFileManager.IsPathValid()) {
+				Debug.LogWarning("[PANEL] " + PanelTitle + " Path invalid!");
+				return;
+			}
 
-		protected virtual void PanelLoad() { Debug.Log("[PANEL] " + PanelTitle + " Load!"); }
+			Debug.Log("[PANEL] " + PanelTitle + " Save!"); 
+		}
+
+		protected virtual void PanelLoad() {
+			if (!VNFileManager.IsPathValid()) {
+				Debug.LogWarning("[PANEL] " + PanelTitle + " Path invalid!"); 
+				return;
+			}
+
+			Debug.Log("[PANEL] " + PanelTitle + " Load!"); 
+		}
 
 		protected virtual void PanelClear() { Debug.Log("[PANEL] " + PanelTitle + " Clear!"); }
 
@@ -156,7 +174,6 @@ namespace VNToolkit.VNEditor.VNUtility {
 
 		public void SetPanelState(VN_PANELSTATE state) {
 			panelState = state;
-
 			if (panelState == VN_PANELSTATE.OPEN) { PanelOpen(); }
 			else if (panelState == VN_PANELSTATE.CLOSE) { PanelClose(); }
 			else if (panelState == VN_PANELSTATE.SAVE) { PanelSave(); }
@@ -167,7 +184,10 @@ namespace VNToolkit.VNEditor.VNUtility {
 		}
 
 		public void AddChildren(VNIPanel child) {
-			if (child == null || children == null)
+			if (children == null)
+				children = new List<VNIPanel>();
+
+			if (child == null)
 				return;
 
 			if (children.Contains(child))

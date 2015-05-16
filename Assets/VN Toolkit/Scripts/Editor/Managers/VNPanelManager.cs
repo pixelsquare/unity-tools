@@ -24,11 +24,11 @@ namespace VNToolkit.VNEditor {
 
 		public static void Initialize(UnityAction repaint) {
 			if (VNStartup == null) {
-				VNStartup = new VNStartupEditor();
+				VNStartup = ScriptableObject.CreateInstance<VNStartupEditor>();
 			}
 
 			if (VNSetup == null) {
-				VNSetup = new VNSetupEditor();
+				VNSetup = ScriptableObject.CreateInstance<VNSetupEditor>();
 			}
 
 			Repaint = repaint;

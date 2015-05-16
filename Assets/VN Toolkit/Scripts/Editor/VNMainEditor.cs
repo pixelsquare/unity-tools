@@ -34,6 +34,7 @@ namespace VNToolkit.VNEditor {
 
 		[MenuItem(VNConstants.MENU_PATH + VNConstants.MENU_TITLE)]
 		private static void InitializeWindow() {
+			//VNEditorUtility.ClearConsoleLog(); // Console Clear
 			Debug.Log("VN Toolkit Window Initialized!");
 			vnWindow = (VNMainEditor)EditorWindow.GetWindow(typeof(VNMainEditor));
 			vnWindow.title = VNConstants.MENU_TITLE;
@@ -46,7 +47,7 @@ namespace VNToolkit.VNEditor {
 			versionNumber = File.ReadAllText(Application.dataPath + "/" + VNConstants.VERSION_PATH);
 
 			VNPanelManager.Initialize(Repaint);
-			VNPanelManager.SetEditorState(VN_EditorState.SETUP);
+			VNPanelManager.SetEditorState(VN_EditorState.STARTUP);
 
 			enabled = true;
 		}

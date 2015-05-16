@@ -74,13 +74,6 @@ namespace VNToolkit.VNEditor {
 			chapterIDText = (chapterList.CurrentElementData != null) ? string.Format(VNDataName.PROJECT_CHAPTER_FORMAT, chapterID) : string.Empty;
 		}
 
-		protected override void PanelSave() {
-			base.PanelSave();
-			//VNDataManager.SharedInstance.VnChapterData.chapterName = chapterName;
-			//VNDataManager.SharedInstance.VnChapterData.chapterDesc = chapterDesc;
-			//VNDataManager.SharedInstance.VnChapterData.DATA_ID = chapterID;
-		}
-
 		private void ChapterInfoWindow(Rect position) {
 			EditorGUILayout.BeginHorizontal();
 			EditorGUILayout.LabelField(string.Format(CHAPTER_ID_FORMAT, chapterIDText), EditorStyles.label);
@@ -96,11 +89,11 @@ namespace VNToolkit.VNEditor {
 			chapterDesc = EditorGUILayout.TextField(chapterDesc, EditorStyles.textField, GUILayout.Width(500f));
 			EditorGUILayout.EndHorizontal();
 
-			if (chapterList.CurrentElementData != null) {
-				if (chapterDesc != chapterList.CurrentElementData.chapterDesc) {
-					chapterList.CurrentElementData.chapterDesc = chapterDesc;
-				}
-			}
+			//if (chapterList.CurrentElementData != null) {
+			//    if (chapterDesc != chapterList.CurrentElementData.chapterDesc) {
+			//        chapterList.CurrentElementData.chapterDesc = chapterDesc;
+			//    }
+			//}
 		}
 
 		# endregion Panel Editor Abstract

@@ -74,11 +74,11 @@ namespace VNToolkit.VNEditor {
 			base.PanelOpen();
 			parent.GetChild(VNPanelInfo.PANEL_LOAD_PROJECT_NAME).SetPanelState(VN_PANELSTATE.CLOSE);
 			parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.OPEN);
-			VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.OPEN);
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.OPEN);
 
 			PanelReset();
 			parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.RESET);
-			VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.RESET);
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.RESET);
 
 			if (VNPanelManager.VnEditorState == VN_EditorState.STARTUP) {
 				VNStartupEditor startEditor = VNPanelManager.CurrentPanel as VNStartupEditor;
@@ -89,14 +89,14 @@ namespace VNToolkit.VNEditor {
 		protected override void PanelClose() {
 			base.PanelClose();
 			parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.CLEAR);
-			VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
 		}
 
 		protected override void PanelSave() {
 			base.PanelSave();
 			VNDataManager.SharedInstance.VnProjectData.projectName = projectName;
 			parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.SAVE);
-			VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.SAVE);
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.SAVE);
 		}
 
 		protected override void PanelLoad() {

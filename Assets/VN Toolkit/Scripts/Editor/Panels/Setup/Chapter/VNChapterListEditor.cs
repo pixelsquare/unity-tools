@@ -101,6 +101,51 @@ namespace VNToolkit.VNEditor {
 			chapterMinusIcon = VNIconDatabase.SharedInstance.GetIcon(VNIconName.ICON_MINUS);
 		}
 
+		protected override void PanelOpen() {
+			base.PanelOpen();
+
+			VNDataManager.SharedInstance.LoadData();
+		}
+
+		protected override void PanelClose() {
+			base.PanelClose();
+		}
+
+		protected override void PanelSave() {
+			base.PanelSave();
+
+			VNChapterData tmpData = VNDataManager.GetData<VNChapterData>(dataNodeList[dataNodeIndx].dataElements[dataElementIndx].elementData) as VNChapterData;
+			tmpData.Save();
+		}
+
+		protected override void PanelLoad() {
+			base.PanelLoad();
+
+			dataNodeList[dataNodeIndx].dataElements = new ChapterDataElements[0];
+			for (int i = 0; i < VNDataManager.SharedInstance.VnChapterData.Count; i++) {
+				ChapterDataElements newElement = new ChapterDataElements();
+				newElement.elementData = VNDataManager.SharedInstance.VnChapterData[i];
+
+				ChapterDataElements[]  elements = dataNodeList[dataNodeIndx].dataElements;
+				ArrayUtility.Add<ChapterDataElements>(ref elements, newElement);
+				dataNodeList[dataNodeIndx].dataElements = elements;
+			}
+
+			SetChapterElementIndex(dataNodeList.Length - 1);
+		}
+
+		protected override void PanelClear() {
+			base.PanelClear();
+		}
+
+		protected override void PanelReset() {
+			base.PanelReset();
+		}
+
+		protected override void PanelRefresh() {
+			base.PanelRefresh();
+		}
+
 		private void ChapterWindow(Rect position) {
 			//EditorGUILayout.LabelField("Node: " + dataNodeIndx, EditorStyles.label);
 			//EditorGUILayout.LabelField("Element: " + dataElementIndx, EditorStyles.label);
@@ -119,7 +164,7 @@ namespace VNToolkit.VNEditor {
 			EditorGUILayout.BeginHorizontal(VNConstants.DEFAULT_STYLE_BOX);
 			if (GUILayout.Button(chapterAddIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
 				AddChapterElement();
-				VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+				VNEditorUtility.SetAllPanelStateRecursively(parent, VN_PANELSTATE.REFRESH);
 			}
 
 			if (GUILayout.Button(chapterMinusIcon, GUILayout.Width(22f), GUILayout.Height(22f))) {
@@ -131,7 +176,7 @@ namespace VNToolkit.VNEditor {
 				{
 					RemoveChapterElement(dataElementIndx);
 					dataElementIndx = -1;
-					VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+					VNEditorUtility.SetAllPanelStateRecursively(parent, VN_PANELSTATE.REFRESH);
 				}
 				
 			}
@@ -146,6 +191,23 @@ namespace VNToolkit.VNEditor {
 		}
 
 		# endregion Panel Editor Abstract
+
+		public void SaveAllChapters() {
+			int count = 0;
+			for (int i = 0; i < dataNodeList.Length; i++) {
+				for (int j = 0; j < dataNodeList[i].dataElements.Length; j++) {
+					if (VNDataManager.SharedInstance.VnChapterData.Contains(dataNodeList[i].dataElements[j].elementData)) {
+						if (VNEditorUtility.Compare<VNChapterData>(VNDataManager.SharedInstance.VnChapterData[count], dataNodeList[i].dataElements[j].elementData)) {
+							VNDataManager.SharedInstance.VnChapterData[count] = dataNodeList[i].dataElements[j].elementData;
+							count++;
+							continue;
+						}
+					}
+
+					VNDataManager.SharedInstance.VnChapterData.Add(dataNodeList[i].dataElements[j].elementData);
+				}
+			}
+		}
 
 		// Nodes
 		private void AddChapterNode() {
@@ -193,11 +255,11 @@ namespace VNToolkit.VNEditor {
 				if (dataNodeList[i].nodeEnabled != toggle) {
 					if (toggle) {
 						SetChapterNodeIndex(i);
-						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+						VNEditorUtility.SetAllPanelStateRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 					else {
 						dataNodeIndx = -1;
-						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+						VNEditorUtility.SetAllPanelStateRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 				}
 
@@ -321,11 +383,11 @@ namespace VNToolkit.VNEditor {
 				if (elements[i].elementEnabled != toggle) {
 					if (toggle) {
 						SetChapterElementIndex(i);
-						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+						VNEditorUtility.SetAllPanelStateRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 					else {
 						dataElementIndx = -1;
-						VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+						VNEditorUtility.SetAllPanelStateRecursively(parent, VN_PANELSTATE.REFRESH);
 					}
 				}
 
@@ -351,7 +413,7 @@ namespace VNToolkit.VNEditor {
 					elements[i].elementEnabled = true;
 					dataElementIndx = indx;
 					dataNodeList[dataNodeIndx].selectedNodeIndx = dataElementIndx;
-					//VNEditorUtility.UpdateAllPanelRecursively(parent, VN_PANELSTATE.REFRESH);
+					//VNEditorUtility.SetAllPanelStateRecursively(parent, VN_PANELSTATE.REFRESH);
 					continue;
 				}
 

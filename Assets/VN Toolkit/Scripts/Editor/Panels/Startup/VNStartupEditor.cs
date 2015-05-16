@@ -8,20 +8,39 @@ using VNToolkit.VNEditor.VNUtility;
 
 namespace VNToolkit.VNEditor {
 
+	[System.Serializable]
 	public class VNStartupEditor : VNPanelAbstract {
 
 		// Public Variables
 
 		// Private Variables
-		private VNNewProjectEditor vnNewProject;
-		private VNLoadProjectEditor vnLoadProject;
-		private VNProjectSettingsEditor vnProjectSettings;
+		[SerializeField] private VNNewProjectEditor vnNewProject;
+		[SerializeField] private VNLoadProjectEditor vnLoadProject;
+		[SerializeField] private VNProjectSettingsEditor vnProjectSettings;
 
 		private string buttonText;
 		private string closeButtonText;
 		private Vector2 windowVerticalScroll;
 
 		// Static Variables
+		public override void OnEnable() {
+			if (vnNewProject == null) {
+				vnNewProject = ScriptableObject.CreateInstance<VNNewProjectEditor>();
+			}
+
+			if (vnLoadProject == null) {
+				vnLoadProject = ScriptableObject.CreateInstance<VNLoadProjectEditor>();
+			}
+
+			if (vnProjectSettings == null) {
+				vnProjectSettings = ScriptableObject.CreateInstance<VNProjectSettingsEditor>();
+			}
+
+			AddChildren(vnNewProject);
+			AddChildren(vnLoadProject);
+			AddChildren(vnProjectSettings);
+		}
+
 		public void SubmitNewProject() {
 			if (!vnNewProject.PanelEnabled)
 				return;
@@ -38,7 +57,7 @@ namespace VNToolkit.VNEditor {
 			if (!vnLoadProject.CanLoad())
 				return;
 
-			VNEditorUtility.UpdateAllPanelRecursively(VNPanelManager.CurrentPanel, VN_PANELSTATE.SAVE);
+			VNEditorUtility.SetAllPanelStateRecursively(VNPanelManager.CurrentPanel, VN_PANELSTATE.SAVE);
 
 			if (VNDataManager.CompareLoadedData<VNProjectData>()) {
 				VNPanelManager.SetEditorState(VN_EditorState.SETUP);
@@ -95,27 +114,12 @@ namespace VNToolkit.VNEditor {
 
 		public override void OnPanelEnable(UnityAction repaint) {
 			base.OnPanelEnable(repaint);
-
-			if (vnNewProject == null) {
-				vnNewProject = new VNNewProjectEditor();
-			}
-			vnNewProject.OnPanelEnable(repaint);
-			AddChildren(vnNewProject);
-
-			if (vnLoadProject == null) {
-				vnLoadProject = new VNLoadProjectEditor();
-			}
-			vnLoadProject.OnPanelEnable(repaint);
-			AddChildren(vnLoadProject);
-
-			if (vnProjectSettings == null) {
-				vnProjectSettings = new VNProjectSettingsEditor();
-			}
-			vnProjectSettings.OnPanelEnable(repaint);
-			AddChildren(vnProjectSettings);
-
 			buttonText = string.Empty;
 			closeButtonText = "Close";
+
+			vnNewProject.OnPanelEnable(repaint);
+			vnLoadProject.OnPanelEnable(repaint);
+			vnProjectSettings.OnPanelEnable(repaint);
 		}
 
 		protected override void PanelOpen() {

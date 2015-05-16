@@ -17,6 +17,19 @@ namespace VNToolkit.VNEditor {
 		private VNResolutionEditor vnResolution;
 
 		// Static Variables
+		public override void OnEnable() {
+			if (vnResolution == null) {
+				vnResolution = CreateInstance<VNResolutionEditor>();
+			}
+
+			AddChildren(vnResolution);
+		}
+
+		public override void OnDisable() {
+			base.OnDisable();
+
+			ScriptableObject.Destroy(vnResolution);
+		}
 
 		# region Panel Editor Abstract
 		public override string PanelTitle {
@@ -53,13 +66,9 @@ namespace VNToolkit.VNEditor {
 
 		public override void OnPanelEnable(UnityAction repaint) {
 			base.OnPanelEnable(repaint);
-			if (vnResolution == null) {
-				vnResolution = new VNResolutionEditor();
-			}
-			vnResolution.OnPanelEnable(repaint);
-			AddChildren(vnResolution);
-
 			pixelsPerUnitText = string.Empty;
+
+			vnResolution.OnPanelEnable(repaint);
 		}
 
 		protected override void PanelOpen() {

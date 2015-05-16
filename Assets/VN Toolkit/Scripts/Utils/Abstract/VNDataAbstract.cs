@@ -6,6 +6,7 @@ using JsonFx.Json;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace VNToolkit.VNEditor.VNUtility {
 
@@ -40,7 +41,7 @@ namespace VNToolkit.VNEditor.VNUtility {
 
 			JsonReader jsonReader = new JsonReader(fileContent);
 			T data = jsonReader.Deserialize<T>();
-
+			
 			return data;
 		}
 

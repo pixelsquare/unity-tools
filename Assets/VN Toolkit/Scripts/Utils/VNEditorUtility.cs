@@ -63,13 +63,21 @@ namespace VNToolkit.VNEditor.VNUtility {
 			return true;
 		}
 
-		public static void UpdateAllPanelRecursively(VNIPanel panel, VN_PANELSTATE state) {
-			foreach (VNIPanel child in panel.children) {
+		public static void SetAllPanelStateRecursively(VNIPanel root, VN_PANELSTATE state) {
+			root.SetPanelState(state);
+			foreach (VNIPanel child in root.children) {
 				if (child != null) {
 					child.SetPanelState(state);
-					UpdateAllPanelRecursively(child, state);
+					SetAllPanelStateRecursively(child, state);
 				}
 			}
+		}
+
+		public static void ClearConsoleLog() {
+			Assembly assembly = Assembly.GetAssembly(typeof(UnityEditor.ActiveEditorTracker));
+			Type type = assembly.GetType("UnityEditorInternal.LogEntries");
+			MethodInfo method = type.GetMethod("Clear");
+			method.Invoke(new object(), null);
 		}
 	}
 }

@@ -14,6 +14,19 @@ namespace VNToolkit.VNEditor {
 		private VNChapterEditor vnChapterEditor;
 
 		// Static Variables 
+		public override void OnEnable() {
+			if (vnChapterEditor == null) {
+				vnChapterEditor = ScriptableObject.CreateInstance<VNChapterEditor>();
+			}
+
+			AddChildren(vnChapterEditor);
+		}
+
+		public override void OnDisable() {
+			base.OnDisable();
+
+			ScriptableObject.Destroy(vnChapterEditor);
+		}
 
 		# region Panel Editor Abstract
 		public override string PanelTitle {
@@ -50,12 +63,7 @@ namespace VNToolkit.VNEditor {
 
 		public override void OnPanelEnable(UnityAction repaint) {
 			base.OnPanelEnable(repaint);
-
-			if (vnChapterEditor == null) {
-				vnChapterEditor = new VNChapterEditor();
-			}
 			vnChapterEditor.OnPanelEnable(repaint);
-			AddChildren(vnChapterEditor);
 		}
 
 		protected override void PanelOpen() {

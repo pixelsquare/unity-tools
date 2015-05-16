@@ -8,33 +8,19 @@ using VNToolkit.VNEditor.VNUtility;
 
 namespace VNToolkit.VNEditor {
 
+	[System.Serializable]
 	public class VNLoadProjectEditor : VNPanelAbstract {
 
 		// Public Variables
 
 		// Private Variables
-		private string projectName;
-		private string projectDirectory;
-		private Object projectFolder;
+		[SerializeField] private string projectName;
+		[SerializeField] private Object projectFolder;
 		private bool autoRefresh;
 
+		//private const string FOLDER_PATH_KEY = "FOLDER_PATH_KEY";
+
 		// Static Variables
-
-		public void UpdateProjectData() {
-			if (projectDirectory != AssetDatabase.GetAssetPath(projectFolder)) {
-				projectDirectory = AssetDatabase.GetAssetPath(projectFolder);
-
-				VNFileManager.LoadProjectPath(projectDirectory);
-
-				if (VNFileManager.IsPathValid()) {
-					VNDataManager.SharedInstance.LoadData();
-				}
-			}
-		}
-
-		public bool CanLoad() {
-			return projectFolder != null;
-		}
 
 		# region Panel Editor Abstract
 		public override string PanelTitle {
@@ -71,28 +57,19 @@ namespace VNToolkit.VNEditor {
 
 		public override void OnPanelEnable(UnityAction repaint) {
 			base.OnPanelEnable(repaint);
-			projectName = string.Empty;
-			projectDirectory = string.Empty;
-			projectFolder = null;
 		}
 
 		protected override void PanelOpen() {
 			base.PanelOpen();
 			parent.GetChild(VNPanelInfo.PANEL_NEW_PROJECT_NAME).SetPanelState(VN_PANELSTATE.CLOSE);
-			parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.OPEN);
-			VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.OPEN);
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.OPEN);
 
-			if (projectFolder != null && VNFileManager.IsPathValid()) {
-				UpdateProjectData();
-				PanelLoad();
-				parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.LOAD);
-				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.LOAD);
-			}
-			else {
-				PanelClear();
-				parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.CLEAR);
-				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
-			}
+			PanelLoad();
+
+			//if(EditorPrefs.HasKey(FOLDER_PATH_KEY)) {
+			//    string path = EditorPrefs.GetString(FOLDER_PATH_KEY, string.Empty);
+			//    projectFolder = AssetDatabase.LoadAssetAtPath(path, typeof(Object));
+			//}
 
 			if (VNPanelManager.VnEditorState == VN_EditorState.STARTUP) {
 				VNStartupEditor startEditor = VNPanelManager.CurrentPanel as VNStartupEditor;
@@ -102,46 +79,53 @@ namespace VNToolkit.VNEditor {
 
 		protected override void PanelClose() {
 			base.PanelClose();
-			parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.CLEAR);
-			VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLOSE);
 		}
 
 		protected override void PanelSave() {
 			base.PanelSave();
 			VNDataManager.SharedInstance.VnProjectData.projectName = projectName;
-			parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.SAVE);
-			VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.SAVE);
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.SAVE);
 		}
 
 		protected override void PanelLoad() {
+			if (projectFolder == null)
+				return;
+
+			string projectDirectory = AssetDatabase.GetAssetPath(projectFolder);
+			VNFileManager.LoadProjectPath(projectDirectory);
+			VNDataManager.SharedInstance.LoadData();
+
+			//projectName = VNDataManager.SharedInstance.VnProjectData.projectName;
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.LOAD);
 			base.PanelLoad();
-			projectName = VNDataManager.SharedInstance.VnProjectData.projectName;
 		}
 
 		protected override void PanelClear() {
 			base.PanelClear();
+
+			if (projectFolder != null)
+				return;
+
 			projectName = string.Empty;
-			projectDirectory = string.Empty;
-			//projectFolder = null;
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
 		}
 
 		protected override void PanelReset() {
 			base.PanelReset();
+
+			projectName = string.Empty;
+			projectFolder = null;
+			autoRefresh = false;
+			VNEditorUtility.SetAllPanelStateRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.RESET);
 		}
 
 		protected override void PanelRefresh() {
-			if (projectFolder != null) {
-				UpdateProjectData();
-				PanelLoad();
-				parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.LOAD);
-				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.LOAD);
-			}
+			PanelLoad();
+			PanelClear();
 
-			if (!VNFileManager.IsPathValid() || projectFolder == null) {
-				PanelClear();
-				parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME).SetPanelState(VN_PANELSTATE.CLEAR);
-				VNEditorUtility.UpdateAllPanelRecursively(parent.GetChild(VNPanelInfo.PANEL_PROJECT_SETTINGS_NAME), VN_PANELSTATE.CLEAR);
-			}
+			//if(projectFolder != null)
+			//    EditorPrefs.SetString(FOLDER_PATH_KEY, AssetDatabase.GetAssetPath(projectFolder));
 
 			base.PanelRefresh();
 		}
@@ -163,14 +147,16 @@ namespace VNToolkit.VNEditor {
 			autoRefresh = EditorGUILayout.Toggle(autoRefresh, EditorStyles.toggle);
 			EditorGUILayout.EndHorizontal();
 
-			//GUILayout.Button(string.Empty, EditorStyles.miniButtonMid, GUILayout.Width(10f), GUILayout.Height(10f));
-
 			if (projectFolder != null) {
 				EditorGUILayout.BeginHorizontal();
 				GUILayout.FlexibleSpace();
+				if (GUILayout.Button("Load", EditorStyles.miniButton, GUILayout.Width(VNConstants.EDITOR_BUTTON_WIDTH))) {
+					PanelLoad();
+				}
+
 				if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(VNConstants.EDITOR_BUTTON_WIDTH))) {
 					projectFolder = null;
-					PanelRefresh();
+					PanelClear();
 				}
 				EditorGUILayout.EndHorizontal();
 			}
@@ -180,5 +166,9 @@ namespace VNToolkit.VNEditor {
 			}
 		}
 		# endregion Panel Editor Abstract
+
+		public bool CanLoad() {
+			return projectFolder != null;
+		}
 	}
 }
