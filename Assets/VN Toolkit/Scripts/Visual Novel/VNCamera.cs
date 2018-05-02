@@ -64,7 +64,7 @@ namespace VNToolkit.VNUtility {
 		public override void OnPanelEnable(UnityAction repaint) {
 			base.OnPanelEnable(repaint);
 			cam = GetComponent<Camera>();
-			cam.isOrthoGraphic = true;
+			cam.orthographic = true;
 			cam.clearFlags = CameraClearFlags.Depth;
 			//cam.cullingMask = 1 << LayerMask.NameToLayer(VNConstants.CAMERA_LAYER_MASK);
 			cam.nearClipPlane = 0.3f;
